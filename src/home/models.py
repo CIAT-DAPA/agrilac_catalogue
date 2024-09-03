@@ -20,3 +20,22 @@ class InstitutionPage(Page):
 
     def __str__(self):
         return self.title
+
+class DatasetPage(Page):
+    TYPE_DATASET_CHOICES = [
+        ('public', 'Público'),
+        ('restricted', 'Restringido'),
+    ]
+
+    type_dataset = models.CharField(max_length=50, choices=TYPE_DATASET_CHOICES)
+    institution_related = models.ForeignKey(InstitutionPage, on_delete=models.SET_NULL, null=True, blank=True, related_name='datasets')
+    description = RichTextField()
+
+    content_panels = Page.content_panels + [
+        FieldPanel('type_dataset'),
+        FieldPanel('institution_related'),
+        FieldPanel('description'),
+    ]
+
+    def __str__(self):
+        return self.title
