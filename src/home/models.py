@@ -26,7 +26,7 @@ class InstitutionPageForm(WagtailAdminPageForm):
 class InstitutionPage(Page):
     verified = models.BooleanField(default=False, verbose_name=_("Verificado"))
     name = models.CharField(max_length=255, verbose_name="Nombre")
-    owner_user = models.OneToOneField('CustomUser', on_delete=models.SET_NULL, null=True, blank=True, related_name="owned_institution", verbose_name="Representante principal")
+    owner_user = models.OneToOneField(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name="owned_institution", verbose_name="Representante principal")
     description = RichTextField(blank=True, verbose_name=_("Descripción"))
     email = models.EmailField(max_length=254, blank=True, verbose_name=_("Email"))
     phone = models.CharField(max_length=20, blank=True, verbose_name=_("Teléfono"))
@@ -41,10 +41,6 @@ class InstitutionPage(Page):
     ]
 
     base_form_class = InstitutionPageForm  # Asignar el formulario personalizado
-    
-    def invite_user(self, user):
-        user.institution = self
-        user.save()
     
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -62,6 +58,7 @@ class InstitutionPage(Page):
 
     def __str__(self):
         return self.name
+    
     
 class CustomUser(AbstractUser):
     VISITOR = 'visitor'
