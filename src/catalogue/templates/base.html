@@ -2,109 +2,127 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>
-            {% block title %}
-            {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
-            {% endblock %}
-            {% block title_suffix %}
-            {% wagtail_site as current_site %}
-            {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
-            {% endblock %}
-        </title>
-        {% if page.search_description %}
-        <meta name="description" content="{{ page.search_description }}" />
-        {% endif %}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        {# Force all links in the live preview panel to be opened in a new tab #}
-        {% if request.in_preview_panel %}
-        <base target="_blank">
-        {% endif %}
-
-        {# Global stylesheets #}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/catalogue.css' %}">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        {% block extra_css %}
-        {# Override this in templates to add extra stylesheets #}
+<head>
+    <meta charset="utf-8" />
+    <title>
+        {% block title %}
+        {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
         {% endblock %}
-    </head>
+        {% block title_suffix %}
+        {% wagtail_site as current_site %}
+        {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
+        {% endblock %}
+    </title>
+    {% if page.search_description %}
+    <meta name="description" content="{{ page.search_description }}" />
+    {% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <body class="{% block body_class %}{% endblock %}">
-        {% wagtailuserbar %}
-        <div class="px-3 py-2 text-bg-dark border-bottom">
-            <div class="container">
-                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
-                        <svg class="me-2" width="20" height="24" viewBox="0 0 20 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14.3564 3.20005L0.5 11.2V6.40005L10.2026 0.800049L14.3564 3.20005Z" fill="currentColor" />
-                            <path d="M19.9051 6.40005V9.16928L2.9 18.9847L0.5 17.6V14.9949L17.6385 5.09748L19.9051 6.40005Z"
-                                fill="currentColor" />
-                            <path d="M6.18205 20.8821L19.9051 12.9642V17.6L10.2026 23.2L6.18205 20.8821Z" fill="currentColor" />
-                        </svg>
-                        Data Catalogue
-                    </a>
-        
-                    <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
-                        <li>
-                            <a href="#" class="nav-link text-white">
-                                <svg class="bi d-block mx-auto mb-1" width="24" height="24" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M9.25 -5.40107e-05H1.75C1.45256 -0.0284138 1.15576 0.0601037 0.922447 0.246755C0.689133 0.433406 0.537623 0.703536 0.5 0.999946V29.9999H10.5V0.999946C10.4624 0.703536 10.3109 0.433406 10.0776 0.246755C9.84424 0.0601037 9.54744 -0.0284138 9.25 -5.40107e-05Z"
-                                        fill="currentColor" />
-                                    <path
-                                        d="M30.27 28.09L23.33 9.79C23.2834 9.6672 23.2131 9.55479 23.123 9.45918C23.0329 9.36358 22.9249 9.28664 22.8051 9.23279C22.6854 9.17893 22.5561 9.14919 22.4248 9.14528C22.2936 9.14137 22.1628 9.16336 22.04 9.21L18.5 10.59V6C18.5 5.73478 18.3946 5.48043 18.2071 5.29289C18.0196 5.10536 17.7652 5 17.5 5H12.5V30H18.5V11.69L25.43 30L30.27 28.09Z"
-                                        fill="currentColor" />
-                                </svg>
-                                Catalogo
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link text-white">
-                                <svg class="bi d-block mx-auto mb-1" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M22.875 5.95833C22.875 8.62875 18.0054 10.7917 12 10.7917C5.99458 10.7917 1.125 8.62875 1.125 5.95833C1.125 3.28792 5.99458 1.125 12 1.125C18.0054 1.125 22.875 3.28792 22.875 5.95833Z"
-                                        fill="currentColor" />
-                                    <path
-                                        d="M22.875 5.95833C22.875 8.62875 18.0054 10.7917 12 10.7917C5.99458 10.7917 1.125 8.62875 1.125 5.95833M22.875 5.95833C22.875 3.28792 18.0054 1.125 12 1.125C5.99458 1.125 1.125 3.28792 1.125 5.95833M22.875 5.95833V12M1.125 5.95833V12M22.875 12C22.875 14.6704 18.0054 16.8333 12 16.8333C5.99458 16.8333 1.125 14.6704 1.125 12M22.875 12V18.0417C22.875 20.7121 18.0054 22.875 12 22.875C5.99458 22.875 1.125 20.7121 1.125 18.0417V12"
-                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                Datasets
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+    {# Force all links in the live preview panel to be opened in a new tab #}
+    {% if request.in_preview_panel %}
+    <base target="_blank">
+    {% endif %}
+
+    {# Global stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/catalogue.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    {% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    {% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    {% wagtailuserbar %}
+    <div class="px-3 py-2 text-bg-dark border-bottom">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+                    <svg class="me-2" width="20" height="24" viewBox="0 0 20 24" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14.3564 3.20005L0.5 11.2V6.40005L10.2026 0.800049L14.3564 3.20005Z"
+                            fill="currentColor" />
+                        <path d="M19.9051 6.40005V9.16928L2.9 18.9847L0.5 17.6V14.9949L17.6385 5.09748L19.9051 6.40005Z"
+                            fill="currentColor" />
+                        <path d="M6.18205 20.8821L19.9051 12.9642V17.6L10.2026 23.2L6.18205 20.8821Z"
+                            fill="currentColor" />
+                    </svg>
+                    Data Catalogue
+                </a>
+
+                <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                    <li>
+                        <a href="#" class="nav-link text-white">
+                            <svg class="bi d-block mx-auto mb-1" width="24" height="24" viewBox="0 0 31 30" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M9.25 -5.40107e-05H1.75C1.45256 -0.0284138 1.15576 0.0601037 0.922447 0.246755C0.689133 0.433406 0.537623 0.703536 0.5 0.999946V29.9999H10.5V0.999946C10.4624 0.703536 10.3109 0.433406 10.0776 0.246755C9.84424 0.0601037 9.54744 -0.0284138 9.25 -5.40107e-05Z"
+                                    fill="currentColor" />
+                                <path
+                                    d="M30.27 28.09L23.33 9.79C23.2834 9.6672 23.2131 9.55479 23.123 9.45918C23.0329 9.36358 22.9249 9.28664 22.8051 9.23279C22.6854 9.17893 22.5561 9.14919 22.4248 9.14528C22.2936 9.14137 22.1628 9.16336 22.04 9.21L18.5 10.59V6C18.5 5.73478 18.3946 5.48043 18.2071 5.29289C18.0196 5.10536 17.7652 5 17.5 5H12.5V30H18.5V11.69L25.43 30L30.27 28.09Z"
+                                    fill="currentColor" />
+                            </svg>
+                            Catalogo
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link text-white">
+                            <svg class="bi d-block mx-auto mb-1" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M22.875 5.95833C22.875 8.62875 18.0054 10.7917 12 10.7917C5.99458 10.7917 1.125 8.62875 1.125 5.95833C1.125 3.28792 5.99458 1.125 12 1.125C18.0054 1.125 22.875 3.28792 22.875 5.95833Z"
+                                    fill="currentColor" />
+                                <path
+                                    d="M22.875 5.95833C22.875 8.62875 18.0054 10.7917 12 10.7917C5.99458 10.7917 1.125 8.62875 1.125 5.95833M22.875 5.95833C22.875 3.28792 18.0054 1.125 12 1.125C5.99458 1.125 1.125 3.28792 1.125 5.95833M22.875 5.95833V12M1.125 5.95833V12M22.875 12C22.875 14.6704 18.0054 16.8333 12 16.8333C5.99458 16.8333 1.125 14.6704 1.125 12M22.875 12V18.0417C22.875 20.7121 18.0054 22.875 12 22.875C5.99458 22.875 1.125 20.7121 1.125 18.0417V12"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            Datasets
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
-        {% block content %}{% endblock %}
-        <div class="px-3 py-2 bg-dark text-bg-dark border-bottom">
-            <div class="container ">
-                <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-                    <a href="/"
-                        class="col-md-4 justify-content-center mb-3 mb-md-0 me-md-auto text-decoration-none text-bg-dark">
-                        <svg class="me-2" width="20" height="24" viewBox="0 0 20 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14.3564 3.20005L0.5 11.2V6.40005L10.2026 0.800049L14.3564 3.20005Z" fill="currentColor" />
-                            <path d="M19.9051 6.40005V9.16928L2.9 18.9847L0.5 17.6V14.9949L17.6385 5.09748L19.9051 6.40005Z"
-                                fill="currentColor" />
-                            <path d="M6.18205 20.8821L19.9051 12.9642V17.6L10.2026 23.2L6.18205 20.8821Z" fill="currentColor" />
-                        </svg>
-                        Data Catalogue
-                    </a>
-        
-                    <ul class="nav col-md-4 justify-content-end">
-                        <li class="nav-item"><a href="#" class="nav-link px-2 text-bg-dark">Home</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link px-2 text-bg-dark">Catalogo</a></li>
-                    </ul>
-                </footer>
-            </div>
+    </div>
+    {% block content %}{% endblock %}
+    <div class="px-3 py-2 bg-dark text-bg-dark border-bottom">
+        <div class="container ">
+            <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+                <a href="/"
+                    class="col-md-4 justify-content-center mb-3 mb-md-0 me-md-auto text-decoration-none text-bg-dark">
+                    <svg class="me-2" width="20" height="24" viewBox="0 0 20 24" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14.3564 3.20005L0.5 11.2V6.40005L10.2026 0.800049L14.3564 3.20005Z"
+                            fill="currentColor" />
+                        <path d="M19.9051 6.40005V9.16928L2.9 18.9847L0.5 17.6V14.9949L17.6385 5.09748L19.9051 6.40005Z"
+                            fill="currentColor" />
+                        <path d="M6.18205 20.8821L19.9051 12.9642V17.6L10.2026 23.2L6.18205 20.8821Z"
+                            fill="currentColor" />
+                    </svg>
+                    Data Catalogue
+                </a>
+
+                <ul class="nav col-md-4 justify-content-end">
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-bg-dark">Home</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-bg-dark">Catalogo</a></li>
+                </ul>
+            </footer>
         </div>
-        {# Global javascript #}
-        <script type="text/javascript" src="{% static 'js/catalogue.js' %}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        {% block extra_js %}
-        {# Override this in templates to add extra javascript #}
-        {% endblock %}
-        
-    </body>
+    </div>
+    {# Global javascript #}
+    <script type="text/javascript" src="{% static 'js/catalogue.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    {% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+    {% endblock %}
+
+</body>
+
 </html>

@@ -9,7 +9,7 @@
    <div class="d-flex justify-content-between align-items-center">
       <div>
          <div class="d-flex align-items-center mb-0">
-            <p class="me-2 my-0"> {{ page.institution_related.title }} </p>
+            <p class="me-2 my-0"> {{ page.institution_related.name }} </p>
             {% if page.institution_related.verified %}
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#2196f3"
                aria-label="Institución verificada"
@@ -28,7 +28,7 @@
             </span>
          </div>
       </div>
-      <a href="{{ page.url_dataset }}" class="btn btn-primary">Obtener datos</a>
+      <a href="{{ page.url_dataset }}" class="btn btn-primary px-4 py-2 rounded-3">Obtener datos</a>
    </div>
 
    <!-- Fecha de subida y ID -->
@@ -164,23 +164,72 @@
       </div>
       <!-- Contacto -->
       <div class="tab-pane fade" id="contacto" role="tabpanel" aria-labelledby="contacto-tab">
-         <p>Email: {{ page.institution_related.email }}</p>
-         <p>Teléfono: {{ page.institution_related.phone }}</p>
+         <h3>{{ page.institution_related.name }}
+            {% if page.institution_related.verified %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#2196f3"
+               aria-label="Institución verificada"
+               class="icon icon-tabler icons-tabler-filled icon-tabler-rosette-discount-check">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+               <path
+                  d="M12.01 2.011a3.2 3.2 0 0 1 2.113 .797l.154 .145l.698 .698a1.2 1.2 0 0 0 .71 .341l.135 .008h1a3.2 3.2 0 0 1 3.195 3.018l.005 .182v1c0 .27 .092 .533 .258 .743l.09 .1l.697 .698a3.2 3.2 0 0 1 .147 4.382l-.145 .154l-.698 .698a1.2 1.2 0 0 0 -.341 .71l-.008 .135v1a3.2 3.2 0 0 1 -3.018 3.195l-.182 .005h-1a1.2 1.2 0 0 0 -.743 .258l-.1 .09l-.698 .697a3.2 3.2 0 0 1 -4.382 .147l-.154 -.145l-.698 -.698a1.2 1.2 0 0 0 -.71 -.341l-.135 -.008h-1a3.2 3.2 0 0 1 -3.195 -3.018l-.005 -.182v-1a1.2 1.2 0 0 0 -.258 -.743l-.09 -.1l-.697 -.698a3.2 3.2 0 0 1 -.147 -4.382l.145 -.154l.698 -.698a1.2 1.2 0 0 0 .341 -.71l.008 -.135v-1l.005 -.182a3.2 3.2 0 0 1 3.013 -3.013l.182 -.005h1a1.2 1.2 0 0 0 .743 -.258l.1 -.09l.698 -.697a3.2 3.2 0 0 1 2.269 -.944zm3.697 7.282a1 1 0 0 0 -1.414 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z" />
+            </svg>
+            {% endif %}
+         </h3>
+
+         <p class="mb-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Email"
+               class="icon icon-tabler icons-tabler-outline icon-tabler-mail me-2">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+               <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+               <path d="M3 7l9 6l9 -6" />
+            </svg>
+            {{ page.institution_related.email }}
+         </p>
+         <p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               aria-label="Teléfono" class="icon icon-tabler icons-tabler-outline icon-tabler-phone me-2">
+               <path stroke="none" d="M0 0h24H0z" fill="none" />
+               <path
+                  d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+            </svg>
+            {{ page.institution_related.phone }}
+         </p>
       </div>
       <!-- Datos geográficos -->
       <div class="tab-pane fade" id="geograficos" role="tabpanel" aria-labelledby="geograficos-tab">
+         <h3>Coordenadas del {{page.title}}</h3>
          {% for geo_data in page.geo_data.all %}
-         <h5>{{ geo_data.geo_type }}</h5>
          {% if geo_data.geo_type == 'coords' %}
-         <p>Latitud: {{ geo_data.latitude }}</p>
-         <p>Longitud: {{ geo_data.longitude }}</p>
+         <div class="d-flex gap-3">
+            <p class="text-truncate mb-0" style="width: 110px;">Latitud: {{ geo_data.latitude }}</p>
+            <p class="mb-0">Longitud: {{ geo_data.longitude }}</p>
+         </div>
          {% else %}
-         <p>Región: {{ geo_data.region_name }}</p>
-         <p>Municipalidad: {{ geo_data.municipality_name }}</p>
+         <div class="d-flex gap-3">
+            <p class="text-truncate mb-0" style="width: 110px;">Región: {{ geo_data.region_name }}</p>
+            <p class="mb-0">Municipalidad: {{ geo_data.municipality_name }}</p>
+         </div>
          {% endif %}
          {% endfor %}
+         <div id="map" class="mb-2 mt-3" style="height: 500px;"></div>
+         <!-- Pasar las coordenadas al JS como un objeto JSON -->
+         <script>
+            var geoCoords = [
+               {% for geo_data in page.geo_data.all %}
+                  {% if geo_data.geo_type == 'coords' %}
+                  {
+                     "lat": {{ geo_data.latitude }},
+                     "lng": {{ geo_data.longitude }}
+                  },
+                  {% endif %}
+               {% endfor %}
+            ];
+         </script>
       </div>
    </div>
+   <a href="{{ page.url_dataset }}" class="btn btn-primary mt-4 mb-5 px-4 py-2 rounded-3">Obtener datos</a>
 </div>
 <script src="{% static 'js/dataset_page.js' %}"></script>
 {% endblock %}

@@ -60,3 +60,37 @@ function copyCitation() {
     tooltip.setContent({ ".tooltip-inner": "Copiar cita" }); // Cambiar el contenido del tooltip
   }, 2000); // Tiempo de espera en milisegundos (2 segundos)
 }
+
+// Inicializa el mapa pero no lo muestres aún
+var map = L.map("map").setView([14.305, -90.785], 13);
+
+// Agrega la capa de OpenStreetMap
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution:
+    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+}).addTo(map);
+
+// Escucha el evento de activación de la pestaña de "Datos geográficos"
+document
+  .querySelector("a#geograficos-tab")
+  .addEventListener("shown.bs.tab", function (e) {
+    // Cuando la pestaña de datos geográficos es visible, invalidamos el tamaño del mapa
+    map.invalidateSize();
+
+    // Crear un grupo de marcadores para almacenar los puntos
+    var markers = L.featureGroup();
+
+    // Iteramos sobre las coordenadas y añadimos marcadores al mapa
+    geoCoords.forEach(function (coord) {
+      if (coord.lat && coord.lng) {
+        var marker = L.marker([coord.lat, coord.lng]).addTo(map);
+        markers.addLayer(marker); // Añadir el marcador al grupo
+      }
+    });
+
+    // Ajustar el mapa para que abarque todos los puntos
+    if (markers.getLayers().length > 0) {
+      map.fitBounds(markers.getBounds());
+    }
+  });
