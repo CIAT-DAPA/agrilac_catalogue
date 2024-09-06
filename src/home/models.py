@@ -27,6 +27,23 @@ class InstitutionPage(Page):
         FieldPanel('phone'),
     ]
 
+    def get_context(self, request, *args, **kwargs):
+        # Llama al contexto original para obtener todo lo que ya tiene
+        context = super().get_context(request, *args, **kwargs)
+        
+        # Calcula los totales
+        datasets = self.datasets.all()  # Accede a los datasets relacionados
+        total_datasets = datasets.count()
+        public_datasets = datasets.filter(type_dataset='public').count()
+        restricted_datasets = datasets.filter(type_dataset='restricted').count()
+        
+        # Añade las variables al contexto
+        context['total_datasets'] = total_datasets
+        context['public_datasets'] = public_datasets
+        context['restricted_datasets'] = restricted_datasets
+
+        return context
+
     def __str__(self):
         return self.title
     

@@ -81,6 +81,20 @@
                </div>
             </div>
          </div>
+
+         <h3>Datasets relacionados</h3>
+         <ul>
+            {% for dataset in page.datasets.all %}
+            <li>
+               <strong>{{ dataset.title }}</strong>
+               <p>
+                  {{ dataset.description|safe }}
+               </p>
+            </li>
+            {% empty %}
+            <p>No hay datasets relacionados con esta institución.</p>
+            {% endfor %}
+         </ul>
       </div>
    </section>
 </div>
