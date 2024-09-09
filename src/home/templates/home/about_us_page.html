@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/about_us.css' %}">
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>Acerca de nosotros</h1>
+            <p class="lead">
+                Duis voluptate enim aute quis nostrud incididunt deserunt commodo cillum anim. Consectetur dolor dolore
+                elit tempor reprehenderit ea nulla anim quis esse. Ex proident velit ut occaecat sit. Minim nisi non sit
+                ea sunt consequat nulla minim deserunt culpa incididunt culpa. Duis esse sit quis irure ullamco do
+                excepteur. Quis commodo nisi est proident consectetur laborum do qui exercitation do est do ullamco
+                nisi.
+            </p>
+            <p>
+                Cillum id non consectetur ex veniam velit consequat ex ea. Ut non ipsum adipisicing aliqua nisi cillum
+                commodo non. Esse voluptate exercitation ipsum excepteur consectetur deserunt sunt occaecat ut fugiat
+                quis nulla. Esse cillum ipsum reprehenderit aliquip fugiat cupidatat amet dolore. Duis veniam aute ut
+                eu. Nostrud aute velit irure esse sit laborum enim eu tempor duis non consequat adipisicing. Culpa do
+                aliquip occaecat ea aliqua et commodo amet deserunt fugiat sunt excepteur adipisicing laborum.
+            </p>
+        </div>
+        <div class="col-lg-4">
+            <img src="/static/img/about.jpg" alt="Imagen de la empresa" class="img-about">
+        </div>
+    </div>
+
+    <div class="row my-5">
+        <div class="col-md-4">
+            <h3>Misión</h3>
+            <p>
+                Lorem cillum pariatur commodo exercitation in nisi aliqua. Voluptate qui reprehenderit eu tempor ex
+                dolore labore duis. Adipisicing quis sint duis et non exercitation eiusmod consequat incididunt non
+                nulla.
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h3>Visión</h3>
+            <p>
+                In voluptate nostrud minim et. Anim ad fugiat occaecat proident eu elit eu mollit voluptate dolore dolor
+                minim ipsum ullamco. Velit pariatur esse pariatur ad exercitation labore pariatur minim magna
+                exercitation in est minim. Laborum elit voluptate est ullamco tempor quis ea incididunt consequat.
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h3>Valores</h3>
+            <ul>
+                <li>Innovación</li>
+                <li>Calidad</li>
+                <li>Integridad</li>
+                <li>Responsabilidad</li>
+                <li>Compromiso</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -46,13 +46,13 @@
          </li>
       </ul>
 
-      <h3>Resumen de Datasets</h3>
+      <h3>Resumen de datasets</h3>
       <div class="row">
          <!-- Tarjeta Total Datasets -->
          <div class="col-md-4">
             <div class="card text-center mb-4 shadow-sm">
                <div class="card-body">
-                  <h4 class="card-title">Total de Datasets</h4>
+                  <h4 class="card-title">Total de datasets</h4>
                   <p class="card-text display-4">{{ total_datasets }}</p>
                </div>
             </div>
@@ -62,7 +62,7 @@
          <div class="col-md-4">
             <div class="card text-center mb-4 shadow-sm">
                <div class="card-body">
-                  <h4 class="card-title">Datasets Públicos</h4>
+                  <h4 class="card-title">Datasets públicos</h4>
                   <p class="card-text display-4">
                      {{ public_datasets }}
                   </p>
@@ -74,7 +74,7 @@
          <div class="col-md-4">
             <div class="card text-center mb-4 shadow-sm">
                <div class="card-body">
-                  <h4 class="card-title">Datasets Privados</h4>
+                  <h4 class="card-title">Datasets privados</h4>
                   <p class="card-text display-4">
                      {{ restricted_datasets }}
                   </p>
@@ -82,7 +82,7 @@
             </div>
          </div>
 
-         <h3>Mis Datasets</h3>
+         <h3>Mis datasets</h3>
          <ul>
             {% for dataset in page.datasets.all %}
             <li>

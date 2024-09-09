@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const words = ["Meteorológicos", "Climáticos", "Atmosféricos", "Ambientales"];
+  const words = ["Climáticos", "Agronómicos", "Ambientales"];
   let index = 0;
   const wordElement = document.getElementById("changing-word");
   let currentWord = "";

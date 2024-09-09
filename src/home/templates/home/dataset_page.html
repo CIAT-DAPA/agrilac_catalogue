@@ -23,9 +23,11 @@
 
          <div class="d-flex align-items-center">
             <h1>{{ page.title }} </h1>
+            {% if page.file_format%}
             <span
                class="badge text-bg-secondary ms-2 text-uppercase bg-success bg-opacity-75 rounded-pill fs-5">{{page.file_format}}
             </span>
+            {% endif %}
          </div>
       </div>
       <a href="{{ page.url_dataset }}" target="_blank" class="btn btn-primary px-4 py-2 rounded-3">Obtener datos</a>
@@ -49,6 +51,7 @@
 
    <!-- Ubicación, Fechas y Frecuencia -->
    <div class="d-flex flex-column gap-1 mb-3">
+      {% if page.location %}
       <div class="me-3">
          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
             class="icon icon-tabler icons-tabler-filled icon-tabler-map-pin">
@@ -58,6 +61,8 @@
          </svg>
          {{ page.location }}
       </div>
+      {% endif %}
+      {% if page.start_date and page.end_date  %}
       <div class="me-3">
          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -77,6 +82,8 @@
          </svg>
          {{ page.start_date|date:"m/d/Y" }} - {{ page.end_date|date:"m/d/Y" }}
       </div>
+      {% endif %}
+      {% if page.upload_frequency %}
       <div class="me-3">
          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -87,6 +94,7 @@
          </svg>
          Frecuencia de subida: {{ page.upload_frequency }}
       </div>
+      {% endif %}
    </div>
 
    <!-- Citar -->
@@ -138,14 +146,18 @@
                <p class="col">{{ info.description|richtext|striptags|linebreaksbr }}</p>
             </li>
             {% endfor %}
+            {% if page.use_limitations %}
             <li class="row border-bottom mb-4">
                <h3 class="col-12 col-lg-3 fs-5">Limitaciones de uso</h3>
                <p class="col">{{page.use_limitations|richtext|striptags|linebreaksbr}}</p>
             </li>
+            {% endif %}
+            {% if page.intended_use %}
             <li class="row border-bottom mb-4">
                <h3 class="col-12 col-lg-3 fs-5">Uso previsto</h3>
                <p class="col">{{page.intended_use|richtext|striptags|linebreaksbr}}</p>
             </li>
+            {% endif %}
          </ul>
       </div>
       <!-- Descripción de los datos -->
