@@ -1,0 +1,12 @@
+.truncate-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limitar a 2 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3rem; /* Altura máxima */
+}
+
+.full-description {
+    display: block;
+}

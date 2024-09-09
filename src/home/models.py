@@ -10,6 +10,7 @@ from wagtail.admin.forms import WagtailAdminPageForm
 from django.contrib.auth import get_user_model  # Importa get_user_model
 from taggit.models import TaggedItemBase
 from modelcluster.tags import ClusterTaggableManager
+from django.core.paginator import Paginator
 
 
 class HomePage(Page):
@@ -53,6 +54,13 @@ class InstitutionPage(Page):
         context = super().get_context(request, *args, **kwargs)
 
         datasets = self.datasets.all()
+
+        # Paginador - Mostramos 5 datasets por página
+        paginator = Paginator(datasets, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # Estadísticas adicionales sobre datasets
         total_datasets = datasets.count()
         public_datasets = datasets.filter(type_dataset='public').count()
         restricted_datasets = datasets.filter(type_dataset='restricted').count()
@@ -60,6 +68,7 @@ class InstitutionPage(Page):
         context['total_datasets'] = total_datasets
         context['public_datasets'] = public_datasets
         context['restricted_datasets'] = restricted_datasets
+        context['page_obj'] = page_obj
 
         return context
 
