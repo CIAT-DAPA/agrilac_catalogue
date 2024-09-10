@@ -72,10 +72,11 @@
    </div>
 
    <!-- Descripción del dataset -->
-   <p>{{ page.description|richtext|striptags|linebreaksbr }}</p>
-
+   <p class="mb-1">{{ page.description|richtext|striptags|linebreaksbr }}</p>
+   <p class="text-muted mb-0">Autores: <strong>{{page.authors}}</strong></p>
+   <p class="text-muted mb-1">Instituciones asociadas: <strong>{{page.partner_institutions}}</strong></p>
    <!-- Palabras clave -->
-   <div class="mb-3">
+   <div class="mb-2">
       {% for keyword in page.keywords.all %}
       <span class="badge bg-secondary">{{ keyword }}</span>
       {% endfor %}
