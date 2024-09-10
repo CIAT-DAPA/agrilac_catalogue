@@ -82,9 +82,9 @@ document
     var markers = L.featureGroup();
 
     // Iteramos sobre las coordenadas y añadimos marcadores al mapa
-    geoCoords.forEach(function (coord) {
-      if (coord.lat && coord.lng) {
-        var marker = L.marker([coord.lat, coord.lng]).addTo(map);
+    geoData.forEach(function (geo) {
+      if (geo.type === "coords" && geo.latitude && geo.longitude) {
+        var marker = L.marker([geo.latitude, geo.longitude]).addTo(map);
         markers.addLayer(marker); // Añadir el marcador al grupo
       }
     });
@@ -94,3 +94,76 @@ document
       map.fitBounds(markers.getBounds());
     }
   });
+
+document
+  .getElementById("download-locations")
+  .addEventListener("click", function () {
+    let csvContent = "data:text/csv;charset=utf-8,";
+
+    // Crear el encabezado del CSV de manera condicional
+    csvContent += "Tipo";
+
+    // Revisa si existen datos del tipo "coords"
+    const hasCoords = geoData.some((geo) => geo.type === "coords");
+    if (hasCoords) {
+      csvContent += ",Latitud,Longitud";
+    }
+    // Revisa si existen datos del tipo distinto a "coords"
+    const hasRegions = geoData.some((geo) => geo.type !== "coords");
+    if (hasRegions) {
+      csvContent += ",Región,Municipalidad";
+    }
+    csvContent += "\n"; // Finaliza el encabezado
+    // Llenar el CSV con los datos
+    geoData.forEach(function (geo) {
+      if (geo.type === "coords") {
+        // Para coordenadas, llenamos latitud y longitud
+        csvContent += `Coordenadas,${geo.latitude},${geo.longitude}`;
+        // Si también hay columnas de región, añadimos columnas vacías para esas
+        if (hasRegions) {
+          csvContent += ",,";
+        }
+        csvContent += "\n"; // Nueva línea
+      } else {
+        // Para región y municipalidad
+        csvContent += `Región`;
+        csvContent += `,"${geo.region_name}","${geo.municipality_name}"\n`;
+      }
+    });
+
+    // Crear un enlace de descarga
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "ubicaciones.csv");
+
+    // Simular el clic para descargar el archivo
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Seleccionamos todas las pestañas
+  const tabs = [
+    {
+      id: "complementaria-tab",
+      content: document.querySelector("#complementaria"),
+    },
+    { id: "acceso-tab", content: document.querySelector("#acceso") },
+    { id: "descripcion-tab", content: document.querySelector("#descripcion") },
+    { id: "geograficos-tab", content: document.querySelector("#geograficos") },
+    { id: "contacto-tab", content: document.querySelector("#contacto") },
+  ];
+
+  // Iteramos sobre cada pestaña
+  tabs.forEach(function (tab) {
+    // Verificamos si el contenido de la pestaña está vacío
+    if (tab.content && tab.content.innerHTML.trim() === "") {
+      // Si está vacío, deshabilitamos la pestaña
+      document.getElementById(tab.id).classList.add("disabled");
+      document.getElementById(tab.id).setAttribute("aria-disabled", "true");
+      document.getElementById(tab.id).removeAttribute("data-bs-toggle"); // Quitamos la funcionalidad de activación
+    }
+  });
+});

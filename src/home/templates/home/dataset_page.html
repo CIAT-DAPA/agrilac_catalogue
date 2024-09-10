@@ -1,14 +1,47 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags static %}
+{% load wagtailcore_tags static custom_filters%}
 
 {% block body_class %}template-homepage{% endblock %}
 
 {% block content %}
+<!-- Modal -->
+<div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h1 class="modal-title fs-5" id="requestModalLabel">Solicitud de acceso</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <h2>{{ page.title }}</h2>
+            <div class="form-floating">
+               <textarea class="form-control" placeholder="Escribe con que motivo necesitas este dataset"
+                  id="floatingTextarea2" style="height: 100px"></textarea>
+               <label for="floatingTextarea2">Motivo de la solicitud</label>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary">Enviar solicitud</button>
+         </div>
+      </div>
+   </div>
+</div>
 <div class="container mt-5">
    <!-- Header con el nombre del dataset y el botón para obtener los datos -->
    <div class="d-flex justify-content-between align-items-center">
       <div>
-         <div class="d-flex align-items-center mb-0">
+         <div class="d-flex align-items-center">
+            <h1 class="mb-0">{{ page.title }} </h1>
+            {% if page.file_format %}
+            {% for format in page.file_format|split:"," %}
+            <span class="badge text-bg-secondary ms-2 text-uppercase bg-success bg-opacity-75 rounded-pill fs-5">
+               {{ format }}
+            </span>
+            {% endfor %}
+            {% endif %}
+         </div>
+         <div class="d-flex align-items-center mb-2">
             <p class="me-2 my-0"> {{ page.institution_related.name }} </p>
             {% if page.institution_related.verified %}
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#2196f3"
@@ -20,27 +53,26 @@
             </svg>
             {% endif %}
          </div>
-
-         <div class="d-flex align-items-center">
-            <h1>{{ page.title }} </h1>
-            {% if page.file_format%}
-            <span
-               class="badge text-bg-secondary ms-2 text-uppercase bg-success bg-opacity-75 rounded-pill fs-5">{{page.file_format}}
-            </span>
-            {% endif %}
-         </div>
       </div>
-      <a href="{{ page.url_dataset }}" target="_blank" class="btn btn-primary px-4 py-2 rounded-3">Obtener datos</a>
+      {% if page.type_dataset == "public" %}
+      <a href="{{ page.url_dataset }}" target="_blank" class="btn btn-primary px-4 py-2 rounded-3">
+         Obtener datos
+      </a>
+      {% elif page.type_dataset == "restricted" %}
+      <button type="button" class="btn btn-secondary px-4 py-2 rounded-3" data-bs-toggle="modal"
+         data-bs-target="#requestModal">
+         Solicitar acceso
+      </button>
+      {% endif %}
    </div>
 
-   <!-- Fecha de subida y ID -->
-   <div class="text-secondary mb-3">
-      Fecha de subida: {{ page.latest_revision_created_at|date:"m/d/Y" }} <br>
-      ID: {{ page.id }}
+   <!-- Fecha de subida-->
+   <div class="text-secondary mb-2">
+      Fecha de subida: {{ page.latest_revision_created_at|date:"m/d/Y" }}
    </div>
 
    <!-- Descripción del dataset -->
-   <p>{{ page.description|richtext }}</p>
+   <p>{{ page.description|richtext|striptags|linebreaksbr }}</p>
 
    <!-- Palabras clave -->
    <div class="mb-3">
@@ -49,24 +81,13 @@
       {% endfor %}
    </div>
 
-   <!-- Ubicación, Fechas y Frecuencia -->
+   <!--  Fechas y Frecuencia -->
    <div class="d-flex flex-column gap-1 mb-3">
-      {% if page.location %}
-      <div class="me-3">
-         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
-            class="icon icon-tabler icons-tabler-filled icon-tabler-map-pin">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-               d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" />
-         </svg>
-         {{ page.location }}
-      </div>
-      {% endif %}
-      {% if page.start_date and page.end_date  %}
-      <div class="me-3">
+      {% if page.start_date and page.end_date %}
+      <div class="d-flex align-items-center">
          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-month">
+            class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-month me-1">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
             <path d="M16 3v4" />
@@ -80,14 +101,14 @@
             <path d="M7.01 17h.005" />
             <path d="M10.01 17h.005" />
          </svg>
-         {{ page.start_date|date:"m/d/Y" }} - {{ page.end_date|date:"m/d/Y" }}
+         Periodo de tiempo: {{ page.start_date|date:"m/d/Y" }} - {{ page.end_date|date:"m/d/Y" }}
       </div>
       {% endif %}
       {% if page.upload_frequency %}
-      <div class="me-3">
+      <div class="d-flex align-items-center ">
          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="icon icon-tabler icons-tabler-outline icon-tabler-clock">
+            class="icon icon-tabler icons-tabler-outline icon-tabler-clock me-1">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
             <path d="M12 7v5l3 3" />
@@ -99,7 +120,7 @@
 
    <!-- Citar -->
    <div class="mb-4">
-      <h2 class="fs-3 border-bottom">Citar</h2>
+      <h2 class="fs-3 border-bottom">Cita</h2>
       <div class="d-flex align-items-center">
          <p id="citationText" class="mb-0 me-3">{{ page.citation|richtext|striptags|linebreaksbr }}</p>
          <button type="button" class="btn btn-outline-primary btn-sm border-0" id="copyButton" onclick="copyCitation()"
@@ -116,7 +137,14 @@
          </button>
       </div>
    </div>
-
+   {% if page.use_license %}
+   <div class="mb-4">
+      <h2 class="fs-3 border-bottom">Licencia de uso</h2>
+      <div class="d-flex align-items-center">
+         <p class="mb-0 me-3">{{page.use_license|richtext|striptags|linebreaksbr}}</p>
+      </div>
+   </div>
+   {% endif %}
    <!-- Tabs de Información complementaria, Descripción de los datos, Contacto, Datos geográficos -->
    <ul class="nav nav-tabs" id="datasetTabs" role="tablist">
       <li class="nav-item" role="presentation">
@@ -124,58 +152,104 @@
             aria-controls="complementaria" aria-selected="true">Información complementaria</a>
       </li>
       <li class="nav-item" role="presentation">
-         <a class="nav-link" id="descripcion-tab" data-bs-toggle="tab" href="#descripcion" role="tab"
-            aria-controls="descripcion" aria-selected="false">Descripción de los datos</a>
+         <a class="nav-link" id="acceso-tab" data-bs-toggle="tab" href="#acceso" role="tab" aria-controls="acceso"
+            aria-selected="true">Instrucciones de acceso</a>
       </li>
       <li class="nav-item" role="presentation">
-         <a class="nav-link" id="contacto-tab" data-bs-toggle="tab" href="#contacto" role="tab" aria-controls="contacto"
-            aria-selected="false">Contacto</a>
+         <a class="nav-link" id="descripcion-tab" data-bs-toggle="tab" href="#descripcion" role="tab"
+            aria-controls="descripcion" aria-selected="false">Diccionario de datos</a>
       </li>
       <li class="nav-item" role="presentation">
          <a class="nav-link" id="geograficos-tab" data-bs-toggle="tab" href="#geograficos" role="tab"
             aria-controls="geograficos" aria-selected="false">Datos geográficos</a>
       </li>
+      <li class="nav-item" role="presentation">
+         <a class="nav-link" id="contacto-tab" data-bs-toggle="tab" href="#contacto" role="tab" aria-controls="contacto"
+            aria-selected="false">Contacto</a>
+      </li>
    </ul>
    <div class="tab-content mt-3">
       <!-- Información complementaria -->
       <div class="tab-pane fade show active" id="complementaria" role="tabpanel" aria-labelledby="complementaria-tab">
+         {% if page.complementary_info %}
          <ul class="list-unstyled">
-            {% for info in page.additional_info.all %}
+            {% for info in page.complementary_info.all %}
             <li class="row border-bottom mb-4">
-               <h3 class="col-12 col-lg-3 fs-5">{{ info.title }}</h3>
+               <h3 class="col-12 col-lg-3 fs-5">{{ info.feature }}</h3>
                <p class="col">{{ info.description|richtext|striptags|linebreaksbr }}</p>
             </li>
             {% endfor %}
-            {% if page.use_limitations %}
-            <li class="row border-bottom mb-4">
-               <h3 class="col-12 col-lg-3 fs-5">Limitaciones de uso</h3>
-               <p class="col">{{page.use_limitations|richtext|striptags|linebreaksbr}}</p>
-            </li>
-            {% endif %}
-            {% if page.intended_use %}
-            <li class="row border-bottom mb-4">
-               <h3 class="col-12 col-lg-3 fs-5">Uso previsto</h3>
-               <p class="col">{{page.intended_use|richtext|striptags|linebreaksbr}}</p>
-            </li>
-            {% endif %}
          </ul>
+         {% endif %}
+      </div>
+      <!-- Instrucciones de acceso -->
+      <div class="tab-pane fade " id="acceso" role="tabpanel" aria-labelledby="acceso-tab">
+         {% if page.access %}
+         <ul class="list-unstyled">
+            <li class="row border-bottom mb-4">
+               <h3 class="">Instrucciones de acceso</h3>
+               <p class="">{{page.access}}</p>
+            </li>
+         </ul>
+         {% endif %}
       </div>
       <!-- Descripción de los datos -->
       <div class="tab-pane fade" id="descripcion" role="tabpanel" aria-labelledby="descripcion-tab">
+         {% if page.data_dictionary %}
          <ul class="list-unstyled"></ul>
          {% for variables in page.data_dictionary.all %}
          <li class="row border-bottom mb-4">
-            <div class="col-12 col-lg-3">
-               <h3 class="fs-5">{{ variables.title }}</h3>
-               <p class="text-secondary mb-1">Unidad: <strong>{{ variables.unit }}</strong></p>
-            </div>
+            <h3 class="col col-12 col-lg-3 col-xl-2 fs-5">{{ variables.field_name }}</h3>
+            <p class="col col-12 col-lg-2 text-secondary mb-1">Unidad: <strong>{{ variables.unit }}</strong></p>
             <p class="col">{{ variables.description|richtext|striptags|linebreaksbr }}</p>
          </li>
          {% endfor %}
          </ul>
+         {% endif %}
+      </div>
+      <!-- Datos geográficos -->
+      <div class="tab-pane fade" id="geograficos" role="tabpanel" aria-labelledby="geograficos-tab">
+         {% if page.geo_data %}
+         <div class="d-flex align-items-center justify-content-between">
+            <h3>Mapa del dataset</h3>
+            <button id="download-locations" class="btn btn-outline-primary">
+               <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="24" height="24" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="icon icon-tabler icons-tabler-outline icon-tabler-download">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+                  <path d="M7 11l5 5l5 -5" />
+                  <path d="M12 4l0 12" />
+               </svg>
+               Descargar ubicaciones
+            </button>
+         </div>
+         <div id="map" class="mb-2 mt-3" style="height: 500px;"></div>
+         <!-- Pasar las coordenadas al JS como un objeto JSON -->
+         <script>
+            var geoData = [
+               {% for geo_data in page.geo_data.all %}
+               {% if geo_data.geo_type == 'coords' %}
+               {
+                  "type": "coords",
+                  "latitude": {{ geo_data.latitude }},
+                  "longitude": {{ geo_data.longitude }}
+               },
+               {% else %}
+               {
+                  "type": "region",
+                  "region_name": "{{ geo_data.region_name }}",
+                  "municipality_name": "{{ geo_data.municipality_name }}"
+               },
+               {% endif %}
+               {% endfor %}
+            ];
+         </script>
+         {% endif %}
       </div>
       <!-- Contacto -->
       <div class="tab-pane fade" id="contacto" role="tabpanel" aria-labelledby="contacto-tab">
+         {% if page.institution_related %}
          <h3>{{ page.institution_related.name }}
             {% if page.institution_related.verified %}
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#2196f3"
@@ -208,40 +282,19 @@
             </svg>
             {{ page.institution_related.phone }}
          </p>
-      </div>
-      <!-- Datos geográficos -->
-      <div class="tab-pane fade" id="geograficos" role="tabpanel" aria-labelledby="geograficos-tab">
-         <h3>Coordenadas del {{page.title}}</h3>
-         {% for geo_data in page.geo_data.all %}
-         {% if geo_data.geo_type == 'coords' %}
-         <div class="d-flex gap-3">
-            <p class="text-truncate mb-0" style="width: 110px;">Latitud: {{ geo_data.latitude }}</p>
-            <p class="mb-0">Longitud: {{ geo_data.longitude }}</p>
-         </div>
-         {% else %}
-         <div class="d-flex gap-3">
-            <p class="text-truncate mb-0" style="width: 110px;">Región: {{ geo_data.region_name }}</p>
-            <p class="mb-0">Municipalidad: {{ geo_data.municipality_name }}</p>
-         </div>
          {% endif %}
-         {% endfor %}
-         <div id="map" class="mb-2 mt-3" style="height: 500px;"></div>
-         <!-- Pasar las coordenadas al JS como un objeto JSON -->
-         <script>
-            var geoCoords = [
-               {% for geo_data in page.geo_data.all %}
-                  {% if geo_data.geo_type == 'coords' %}
-                  {
-                     "lat": {{ geo_data.latitude }},
-                     "lng": {{ geo_data.longitude }}
-                  },
-                  {% endif %}
-               {% endfor %}
-            ];
-         </script>
       </div>
    </div>
-   <a href="{{ page.url_dataset }}" target="_blank" class="btn btn-primary mt-4 mb-5 px-4 py-2 rounded-3">Obtener datos</a>
+   {% if page.type_dataset == "public" %}
+   <a href="{{ page.url_dataset }}" target="_blank" class="btn btn-primary mt-4 mb-5 px-4 py-2 rounded-3">
+      Obtener datos
+   </a>
+   {% elif page.type_dataset == "restricted" %}
+   <button type="button" class="btn btn-secondary mt-4 mb-5 px-4 py-2 rounded-3" data-bs-toggle="modal"
+      data-bs-target="#requestModal">
+      Solicitar acceso
+   </button>
+   {% endif %}
 </div>
 <script src="{% static 'js/dataset_page.js' %}"></script>
 {% endblock %}
