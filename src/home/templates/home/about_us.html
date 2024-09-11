@@ -1,0 +1,28 @@
+{% load wagtailcore_tags static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/about_us.css' %}">
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>Acerca de nosotros test</h1>
+            <p class="lead">
+                El catálogo incluirá metadatos de datasets de datos históricos sobre variables como precipitaciones,
+                temperatura, humedad y otros indicadores agroclimáticos, esenciales para la planificación agrícola y la
+                gestión de riesgos.
+            </p>
+            <p>
+                El aplicativo de catálogo de datos climáticos de AGRILAC, una iniciativa del CGIAR, está en proceso de
+                desarrollo con el objetivo de facilitar el acceso a información climática relevante y actualizada para
+                investigadores, tomadores de decisiones y agricultores en América Latina y el Caribe. Este sistema está
+                diseñado para centralizar, organizar y poner a disposición diversos conjuntos de datos climáticos de
+                alta calidad, provenientes de fuentes confiables y validadas.
+            </p>
+        </div>
+        <div class="col-lg-4">
+            <img src="/static/img/about.jpg" alt="Imagen de la empresa" class="img-about">
+        </div>
+    </div>
+</div>
+{% endblock %}

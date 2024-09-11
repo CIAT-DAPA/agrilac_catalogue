@@ -85,7 +85,27 @@ document
     geoData.forEach(function (geo) {
       if (geo.type === "coords" && geo.latitude && geo.longitude) {
         var marker = L.marker([geo.latitude, geo.longitude]).addTo(map);
-        markers.addLayer(marker); // Añadir el marcador al grupo
+        markers.addLayer(marker);
+      } else if (geo.type === "region") {
+        // Si es una región, cargar el GeoJSON correspondiente
+        fetch(`/static/geojson/GTM-ADM1.geojson`)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (geojsonData) {
+            var filteredRegion = L.geoJson(geojsonData, {
+              filter: function (feature) {
+                return feature.properties.shapeName === geo.region_name;
+              },
+            }).addTo(map);
+            // Ajustar el mapa para que abarque la región
+            if (filteredRegion.getBounds) {
+              map.fitBounds(filteredRegion.getBounds());
+            }
+          })
+          .catch(function (error) {
+            console.error("Error cargando el archivo GeoJSON: ", error);
+          });
       }
     });
 

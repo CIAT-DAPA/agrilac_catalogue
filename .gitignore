@@ -1,5 +1,6 @@
 /.venv
 /env
+/venv
 
 #*.sqlite3
 .venv/Lib/site-packages/distutils-precedence.pth
