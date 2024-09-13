@@ -1,6 +1,9 @@
-{% if page.slug == "about-us-test" %}
+{% if page.slug == "about-us" %}
   <!-- Plantilla específica para About Us -->
   {% include "home/about_us.html" %}
+{% elif page.slug == "partner" %}
+  <!-- Plantilla específica para About Us -->
+  {% include "home/partners.html" %}
 {% else %}
   {% load i18n wagtailcore_tags static %}
 

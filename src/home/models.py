@@ -16,12 +16,6 @@ from django.core.paginator import Paginator
 class HomePage(Page):
     pass
 
-class AboutUsPage(Page):
-    pass
-
-class PartnersPage(Page):
-    pass
-
 #Para traer los usuario al crear una institución. Esto porque el user se define mas abajo en este archivo
 class InstitutionPageForm(WagtailAdminPageForm):
     owner_user = forms.ModelChoiceField(
