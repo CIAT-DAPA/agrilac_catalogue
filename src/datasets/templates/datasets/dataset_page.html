@@ -59,7 +59,7 @@
          Obtener datos
       </a>
       {% elif page.type_dataset == "restricted" %}
-      <button type="button" class="btn btn-secondary px-4 py-2 rounded-3" data-bs-toggle="modal"
+      <button type="button" class="btn btn-primary px-4 py-2 rounded-3" data-bs-toggle="modal"
          data-bs-target="#requestModal">
          Solicitar acceso
       </button>
@@ -72,14 +72,16 @@
    </div>
 
    <!-- Descripción del dataset -->
-   <p class="mb-1">{{ page.description|richtext|striptags|linebreaksbr }}</p>
+   <p class="mb-1">{{ page.description|richtext }}</p>
    <p class="text-muted mb-0">Autores: <strong>{{page.authors}}</strong></p>
    <p class="text-muted mb-1">Instituciones asociadas: <strong>{{page.partner_institutions}}</strong></p>
    <!-- Palabras clave -->
    <div class="mb-2">
-      {% for keyword in page.keywords.all %}
+      {% with page.keywords|split:", " as keywords_list %}
+      {% for keyword in keywords_list %}
       <span class="badge bg-secondary">{{ keyword }}</span>
       {% endfor %}
+      {% endwith %}
    </div>
 
    <!--  Fechas y Frecuencia -->
@@ -123,7 +125,7 @@
    <div class="mb-4">
       <h2 class="fs-3 border-bottom">Cita</h2>
       <div class="d-flex align-items-center">
-         <p id="citationText" class="mb-0 me-3">{{ page.citation|richtext|striptags|linebreaksbr }}</p>
+         <p id="citationText" class="mb-0 me-3">{{ page.citation|richtext }}</p>
          <button type="button" class="btn btn-outline-primary btn-sm border-0" id="copyButton" onclick="copyCitation()"
             data-bs-toggle="tooltip" data-bs-title="Copiar cita">
             <svg id="copyIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -142,7 +144,7 @@
    <div class="mb-4">
       <h2 class="fs-3 border-bottom">Licencia de uso</h2>
       <div class="d-flex align-items-center">
-         <p class="mb-0 me-3">{{page.use_license|richtext|striptags|linebreaksbr}}</p>
+         <p class="mb-0 me-3">{{page.use_license|richtext}}</p>
       </div>
    </div>
    {% endif %}
@@ -177,7 +179,7 @@
             {% for info in page.complementary_info.all %}
             <li class="row border-bottom mb-4">
                <h3 class="col-12 col-lg-3 fs-5">{{ info.feature }}</h3>
-               <p class="col">{{ info.description|richtext|striptags|linebreaksbr }}</p>
+               <p class="col">{{ info.description|richtext }}</p>
             </li>
             {% endfor %}
          </ul>
@@ -189,7 +191,7 @@
          <ul class="list-unstyled">
             <li class="row border-bottom mb-4">
                <h3 class="">Instrucciones de acceso</h3>
-               <p class="">{{page.access_instructions}}</p>
+               <p class="">{{page.access_instructions|richtext}}</p>
             </li>
          </ul>
          {% endif %}
@@ -207,7 +209,7 @@
          <li class="row border-bottom mb-4">
             <h3 class="col col-12 col-lg-3 col-xl-2 fs-5">{{ variables.field_name }}</h3>
             <p class="col col-12 col-lg-2  mb-1"> <strong>{{ variables.unit }}</strong></p>
-            <p class="col">{{ variables.description|richtext|striptags|linebreaksbr }}</p>
+            <p class="col">{{ variables.description|richtext }}</p>
          </li>
          {% endfor %}
          </ul>
@@ -235,20 +237,20 @@
          <script>
             var geoData = [
                {% for geo_data in page.geo_data.all %}
-               {% if geo_data.geo_type == 'coords' %}
-               {
-                  "type": "coords",
-                  "latitude": {{ geo_data.latitude }},
-                  "longitude": {{ geo_data.longitude }}
-               },
-               {% else %}
-               {
-                  "type": "region",
+            {% if geo_data.geo_type == 'coords' %}
+            {
+               "type": "coords",
+                  "latitude": { { geo_data.latitude } },
+               "longitude": { { geo_data.longitude } }
+            },
+            {% else %}
+            {
+               "type": "region",
                   "region_name": "{{ geo_data.region_name }}",
-                  "municipality_name": "{{ geo_data.municipality_name }}"
-               },
-               {% endif %}
-               {% endfor %}
+                     "municipality_name": "{{ geo_data.municipality_name }}"
+            },
+            {% endif %}
+            {% endfor %}
             ];
          </script>
          {% endif %}
@@ -296,7 +298,7 @@
       Obtener datos
    </a>
    {% elif page.type_dataset == "restricted" %}
-   <button type="button" class="btn btn-secondary mt-4 mb-5 px-4 py-2 rounded-3" data-bs-toggle="modal"
+   <button type="button" class="btn btn-primary mt-4 mb-5 px-4 py-2 rounded-3" data-bs-toggle="modal"
       data-bs-target="#requestModal">
       Solicitar acceso
    </button>
