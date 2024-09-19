@@ -1,0 +1,15 @@
+<!-- institutions/templates/institutions/confirm_delete_partner.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2>Eliminar socio</h2>
+    <p>¿Estás seguro de que deseas eliminar a {{ membership.user.first_name }} {{ membership.user.last_name }} de la institución {{ membership.institution.name }}?</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar</button>
+        <a href="{% url 'institution_detail' membership.institution.id %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

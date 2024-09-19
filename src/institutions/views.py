@@ -1,38 +1,55 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import get_user_model
-from django.contrib import messages
-from django import forms
-from .models import InstitutionPage
+# institutions/views.py
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
+from .models import InstitutionPage, InstitutionMembership
+from .forms import AddPartnerForm
 
-class AddPartnerForm(forms.Form):
-    partner_email = forms.EmailField(label="Correo del socio")
+@login_required
+def institution_partners(request):
+    # Obtener la institución del usuario que es dueño
+    institution = get_object_or_404(InstitutionPage, owner_user=request.user)
+    partners = institution.membership_set.select_related('user')
 
-def manage_partners(request, institution_id):
-    institution = get_object_or_404(InstitutionPage, id=institution_id)
+    # Procesamos el formulario de adición de socio
+    if request.method == 'POST':
+        form = AddPartnerForm(request.POST, institution=institution)
+        if form.is_valid():
+            form.save()
+            return redirect('partners')  # Redirigimos de vuelta a la lista de socios
+    else:
+        form = AddPartnerForm(institution=institution)
+
+    return render(request, 'institutions/institution_partners.html', {
+        'institution': institution,
+        'partners': partners,  # Pasamos los socios al contexto
+        'form': form  # Pasamos el formulario al contexto
+    })
+
+
+@login_required
+def remove_partner(request, institution_id, partner_id):
+    # Verifica que el usuario sea el dueño de la institución
+    institution = get_object_or_404(InstitutionPage, id=institution_id, owner_user=request.user)
+
+    # Buscar la relación entre la institución y el socio
+    membership = get_object_or_404(InstitutionMembership, institution=institution, user_id=partner_id)
     
     if request.method == 'POST':
-        form = AddPartnerForm(request.POST)
-        if form.is_valid():
-            # Busca al socio por correo
-            try:
-                user = get_user_model().objects.get(email=form.cleaned_data['partner_email'])
-                institution.partners.add(user)
-                messages.success(request, f"Socio {user.email} agregado con éxito.")
-            except get_user_model().DoesNotExist:
-                messages.error(request, "No se encontró un usuario con ese correo.")
-        return redirect('manage_partners', institution_id=institution.id)
+        # Si se confirma la eliminación, eliminar la relación (membership)
+        membership.delete()
+        return redirect('partners')
     
-    form = AddPartnerForm()
+    # Si se accede por GET, redirigir a la página de detalles de la institución
+    return render(request, 'institutions/confirm_delete_partner.html', {'membership': membership})
 
-    # Socios actuales
-    current_partners = institution.partners.all()
 
-    return render(request, 'manage_partners.html', {
-        'institution': institution,
-        'form': form,
-        'current_partners': current_partners,
-    })
+
+def institution_detail(request, pk):
+    institution = get_object_or_404(InstitutionPage, pk=pk)
+    return render(request, 'institutions/institution_page.html', {'page': institution})
+
 
 def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
