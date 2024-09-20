@@ -56,7 +56,7 @@
 
                 <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small border-end">
                     <li>
-                        <a href="#" class="nav-link text-white">
+                        <a href="{% url 'dataset_search' %}" class="nav-link text-white">
                             <svg class="bi d-block mx-auto mb-1" width="24" height="24" viewBox="0 0 31 30" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -71,9 +71,9 @@
                     </li>
                     <li>
                         <a href="#" class="nav-link text-white">
-                            <svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
+                            <svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"
                                 class="icon icon-tabler icons-tabler-outline icon-tabler-buildings">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                 <path d="M4 21v-15c0 -1 1 -2 2 -2h5c1 0 2 1 2 2v15" />
@@ -144,7 +144,8 @@
 
                 <ul class="nav col-md-4 justify-content-end">
                     <li class="nav-item"><a href="/" class="nav-link px-2 text-white">Home</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-white">Catálogo</a></li>
+                    <li class="nav-item"><a href="{% url 'dataset_search' %}"
+                            class="nav-link px-2 text-white">Catálogo</a></li>
                     <li class="nav-item">
                         <a href="{% slugurl 'partner' %}" class="nav-link px-2 text-white">Socios</a>
                     </li>

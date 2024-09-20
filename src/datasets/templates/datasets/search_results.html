@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load custom_filters%}
+{% block content %}
+<div class="row container-fluid">
+    <!-- Barra lateral de filtros -->
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Fecha de datos</h5>
+                <input type="date" class="form-control" placeholder="Inicio">
+                <input type="date" class="form-control mt-2" placeholder="Fin">
+
+                <h5 class="mt-3">Ubicación</h5>
+                <ul class="list-unstyled">
+                    <li><input type="checkbox"> Guatemala</li>
+                    <li><input type="checkbox"> Honduras</li>
+                    <li><input type="checkbox"> Nicaragua</li>
+                </ul>
+
+                <h5 class="mt-3">Frecuencia de subida</h5>
+                <ul class="list-unstyled">
+                    <li><input type="checkbox"> Diaria</li>
+                    <li><input type="checkbox"> Semanal</li>
+                    <li><input type="checkbox"> Mensual</li>
+                </ul>
+
+                <h5 class="mt-3">Acceso</h5>
+                <ul class="list-unstyled">
+                    <li><input type="radio" name="access" value="Libre"> Libre</li>
+                    <li><input type="radio" name="access" value="Privado"> Privado</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultados de la búsqueda -->
+    <div class="col-md-9">
+        {% if datasets %}
+        <h2>Resultados de la búsqueda:</h2>
+        {% for dataset in datasets %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h4>
+                            {{ dataset.title }}
+                            {% if page.file_format %}
+                            {% for format in page.file_format|split:"," %}
+                            <span
+                                class="badge text-bg-secondary ms-2 text-uppercase bg-success bg-opacity-75 rounded-pill fs-5">
+                                {{ format }}
+                            </span>
+                            {% endfor %}
+                            {% endif %}
+                        </h4>
+                        <p>Fecha de subida: 30/07/2024</p>
+                        <p>{{ page.description }}.</p>
+                        <p>
+                            <span class="badge bg-info">Agrometeorología</span>
+                            <span class="badge bg-info">Estaciones</span>
+                            <span class="badge bg-info">Lluvias</span>
+                            <span class="badge bg-info">Pronósticos</span>
+                        </p>
+                        <p>Localización: Santa Lucía Cotz, Escuintla, Guatemala</p>
+                        <p>Rango de fechas: 01/01/1997 - 31/12/2023</p>
+                        <p>Tamaño: 2 GB</p>
+                    </div>
+                    <div class="col-md-3 text-end">
+                        <button class="btn btn-primary">Obtener datos</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No se encontraron datasets.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
