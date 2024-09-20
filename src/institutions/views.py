@@ -11,6 +11,7 @@ def institution_partners(request):
     # Obtener la institución del usuario que es dueño
     institution = get_object_or_404(InstitutionPage, owner_user=request.user)
     partners = institution.membership_set.select_related('user')
+    print(partners)
 
     # Procesamos el formulario de adición de socio
     if request.method == 'POST':

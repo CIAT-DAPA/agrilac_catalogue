@@ -7,9 +7,12 @@
     <p>¿Estás seguro de que deseas eliminar a {{ membership.user.first_name }} {{ membership.user.last_name }} de la institución {{ membership.institution.name }}?</p>
     
     <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Confirmar</button>
-        <a href="{% url 'institution_detail' membership.institution.id %}" class="btn btn-secondary">Cancelar</a>
+        <form action="{% url 'remove_partner' membership.institution.id membership.user.id%}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Confirmar</button>
+            <a href="{% url 'partners' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+        
     </form>
 </div>
 {% endblock %}
