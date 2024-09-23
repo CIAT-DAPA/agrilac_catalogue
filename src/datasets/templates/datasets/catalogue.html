@@ -155,7 +155,7 @@
                 Todos los filtros
             </button>
             <!-- Barra de búsqueda -->
-            <form class="position-relative w-100">
+            <div class="position-relative w-100">
                 <span class="position-absolute search-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -165,14 +165,15 @@
                         <path d="M21 21l-6 -6" />
                     </svg>
                 </span>
-                <input type="search" class="form-control ps-5" placeholder="Buscar..." aria-label="Search">
-            </form>
+                <input type="search" id="searchInput" class="form-control ps-5" placeholder="Buscar..."
+                    aria-label="Search">
+            </div>
 
         </div>
 
         {% if datasets %}
         {% for dataset in datasets %}
-        <div class="card mb-3">
+        <div id="resultsContainer" class="card mb-3">
             <div class="card-body">
                 <div class="row">
                     <div class="d-flex justify-content-between align-items-center">

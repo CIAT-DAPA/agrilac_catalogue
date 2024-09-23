@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('search/', views.search, name='dataset_search'),
+    path('catalogue/', views.catalogue, name='catalogue'),
 ]

@@ -3,6 +3,8 @@ from django.template.response import TemplateResponse
 
 from wagtail.models import Page
 
+from datasets.models import DatasetPage
+
 # To enable logging of search queries for use with the "Promoted search results" module
 # <https://docs.wagtail.org/en/stable/reference/contrib/searchpromotions.html>
 # uncomment the following line and the lines indicated in the search function
@@ -25,7 +27,7 @@ def search(request):
         # query.add_hit()
 
     else:
-        search_results = Page.objects.none()
+        search_results = Page.objects.live()
 
     # Pagination
     paginator = Paginator(search_results, 10)
@@ -44,3 +46,34 @@ def search(request):
             "search_results": search_results,
         },
     )
+
+def searchDatasets(request):
+    search_query = request.GET.get("query", None)
+    page = request.GET.get("page", 1)
+
+    # Search
+    if search_query:
+        # Filtrar solo los DatasetPage cuyo título contenga el search_query
+        search_results = DatasetPage.objects.live().filter(title__icontains=search_query)
+    else:
+        # Mostrar todos los DatasetPage si no hay consulta
+        search_results = DatasetPage.objects.live()
+
+    # Pagination
+    paginator = Paginator(search_results, 10)
+    try:
+        search_results = paginator.page(page)
+    except PageNotAnInteger:
+        search_results = paginator.page(1)
+    except EmptyPage:
+        search_results = paginator.page(paginator.num_pages)
+
+    return TemplateResponse(
+        request,
+        "search/searchDataset.html",
+        {
+            "search_query": search_query,
+            "search_results": search_results,
+        },
+    )
+
