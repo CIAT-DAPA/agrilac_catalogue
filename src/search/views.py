@@ -60,7 +60,9 @@ def searchDatasets(request):
         search_results = DatasetPage.objects.live()
 
     # Pagination
-    paginator = Paginator(search_results, 10)
+    paginator = Paginator(search_results, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     try:
         search_results = paginator.page(page)
     except PageNotAnInteger:
@@ -74,6 +76,7 @@ def searchDatasets(request):
         {
             "search_query": search_query,
             "search_results": search_results,
+            "page_obj": page_obj,
         },
     )
 
