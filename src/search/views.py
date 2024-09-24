@@ -50,6 +50,14 @@ def search(request):
 def searchDatasets(request):
     search_query = request.GET.get("query", None)
     page = request.GET.get("page", 1)
+    start_date = request.GET.get("start_date", None)
+    end_date = request.GET.get("end_date", None)
+    region_name = request.GET.get("region_name", None)
+    variable_name = request.GET.get("variable_name", None)
+    institution = request.GET.get("institution", None)
+    type_dataset = request.GET.get("type_dataset", None)
+    keywords = request.GET.get("keywords", None)
+    upload_frequency = request.GET.get("upload_frequency", None)
 
     # Search
     if search_query:
@@ -57,6 +65,13 @@ def searchDatasets(request):
         search_results = DatasetPage.objects.live().filter(title__icontains=search_query)
     else:
         # Mostrar todos los DatasetPage si no hay consulta
+        search_results = DatasetPage.objects.live()
+
+    # Access
+    if type_dataset:
+        type_dataset_list = [x.strip() for x in type_dataset.split(",")]
+        search_results = DatasetPage.objects.live().filter(type_dataset__in=type_dataset_list)
+    else:
         search_results = DatasetPage.objects.live()
 
     # Pagination
