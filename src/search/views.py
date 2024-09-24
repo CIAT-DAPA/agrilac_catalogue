@@ -67,12 +67,46 @@ def searchDatasets(request):
         # Mostrar todos los DatasetPage si no hay consulta
         search_results = DatasetPage.objects.live()
 
+    # Date range
+    if start_date:
+        search_results = search_results.filter(start_date__gte=start_date)
+    if end_date:
+        search_results = search_results.filter(end_date__lte=end_date)
+
     # Access
     if type_dataset:
         type_dataset_list = [x.strip() for x in type_dataset.split(",")]
-        search_results = DatasetPage.objects.live().filter(type_dataset__in=type_dataset_list)
-    else:
-        search_results = DatasetPage.objects.live()
+        search_results = search_results.filter(type_dataset__in=type_dataset_list)
+
+    # Institution
+    if institution:
+        institution_list = [x.strip() for x in institution.split(",")]
+        search_results = search_results.filter(institution_related__in=institution_list)
+
+    # Keywords
+    if keywords:
+        keywords_list = [x.strip() for x in keywords.split(",")]
+        for keyword in keywords_list:
+            search_results = search_results.filter(keywords__icontains=keyword)
+
+    # Region
+    if region_name:
+        region_list = [x.strip() for x in region_name.split(",")]
+        search_results = search_results.filter(geo_data__region_name__in=region_list)
+
+    # Variable
+    if variable_name:
+        variable_list = [x.strip() for x in variable_name.split(",")]
+        for variable in variable_list:
+            search_results = search_results.filter(data_dictionary__field_name=variable)
+    
+    # Upload frequency
+    if upload_frequency:
+        upload_frequency_list = [x.strip() for x in upload_frequency.split(",")]
+        search_results = search_results.filter(upload_frequency__in=upload_frequency_list)
+
+    # Remove duplicates
+    search_results = search_results.distinct()
 
     # Pagination
     paginator = Paginator(search_results, 8)

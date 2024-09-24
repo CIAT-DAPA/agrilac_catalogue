@@ -22,58 +22,42 @@
                 <h5 class="mt-3">Ubicación</h5>
                 <hr />
                 <ul class="list-unstyled" id="location-filter">
+                    {% for ubicacion in ubicaciones %}
                     <li>
-                        <input class="form-check-input" type="checkbox" value="guatemala" id="checkGuatemala">
-                        <label class="form-check-label" for="checkGuatemala">
-                            Guatemala
+                        <input class="form-check-input" type="checkbox" value="{{ ubicacion }}"
+                            id="check{{ ubicacion }}">
+                        <label class="form-check-label" for="check{{ ubicacion }}">
+                            {{ ubicacion }}
                         </label>
                     </li>
-                    <li>
-                        <input class="form-check-input" type="checkbox" value="honduras" id="checkHonduras">
-                        <label class="form-check-label" for="checkHonduras">
-                            Honduras
-                        </label>
-                    </li>
-                    <li>
-                        <input class="form-check-input" type="checkbox" value="nicaragua" id="checkNicaragua">
-                        <label class="form-check-label" for="checkNicaragua">
-                            Nicaragua
-                        </label>
-                    </li>
+                    {% endfor %}
                 </ul>
 
                 <h5 class="mt-3">Variables</h5>
                 <hr />
                 <ul class="list-unstyled" id="variables-filter">
+                    {% for variable in variables %}
                     <li>
-                        <input class="form-check-input" type="checkbox" value="precipitacion" id="checkPrecipitacion">
-                        <label class="form-check-label" for="checkPrecipitacion">
-                            Precipitacion
+                        <input class="form-check-input" type="checkbox" value="{{ variable }}" id="check{{ variable }}">
+                        <label class="form-check-label" for="check{{ variable }}">
+                            {{ variable }}
                         </label>
                     </li>
-                    <li>
-                        <input class="form-check-input" type="checkbox" value="temperatura" id="checkTemperatura">
-                        <label class="form-check-label" for="checkTemperatura">
-                            Temperatura
-                        </label>
-                    </li>
+                    {% endfor %}
                 </ul>
 
                 <h5 class="mt-3">Instituciones</h5>
                 <hr />
                 <ul class="list-unstyled" id="institution-filter">
+                    {% for institucion in instituciones %}
                     <li>
-                        <input class="form-check-input" type="checkbox" value="icc" id="checkICC">
-                        <label class="form-check-label" for="checkICC">
-                            ICC
+                        <input class="form-check-input" type="checkbox" value="{{ institucion.id }}"
+                            id="check{{ institucion.id }}">
+                        <label class="form-check-label" for="check{{ institucion.id }}">
+                            {{ institucion.title }}
                         </label>
                     </li>
-                    <li>
-                        <input class="form-check-input" type="checkbox" value="disagro" id="checkDisagro">
-                        <label class="form-check-label" for="checkDisagro">
-                            Disagro
-                        </label>
-                    </li>
+                    {% endfor %}
                 </ul>
 
                 <h5 class="mt-3">Acceso</h5>
@@ -96,36 +80,28 @@
                 <h5 class="mt-3">Palabras claves</h5>
                 <hr />
                 <ul class="list-unstyled" id="key-words-filter">
+                    {% for keyword in keywords %}
                     <li>
-                        <input class="form-check-input" type="checkbox" value="agrometeorologia"
-                            id="checkAgrometeorologia">
-                        <label class="form-check-label" for="checkAgrometeorologia">
-                            Agrometeorología
+                        <input class="form-check-input" type="checkbox" value="{{ keyword }}" id="check{{ keyword }}">
+                        <label class="form-check-label" for="check{{ keyword }}">
+                            {{ keyword }}
                         </label>
                     </li>
-                    <li>
-                        <input class="form-check-input" type="checkbox" value="estaciones" id="checkEstaciones">
-                        <label class="form-check-label" for="checkEstaciones">
-                            Estaciones
-                        </label>
-                    </li>
+                    {% endfor %}
                 </ul>
 
                 <h5 class="mt-3">Frecuencia de subida</h5>
                 <hr />
                 <ul class="list-unstyled" id="frequency-filter">
+                    {% for frecuencia in frecuencias %}
                     <li>
-                        <input class="form-check-input" type="checkbox" value="diaria" id="checkDiaria">
-                        <label class="form-check-label" for="checkDiaria">
-                            Diaria
+                        <input class="form-check-input" type="checkbox" value="{{ frecuencia }}"
+                            id="check{{ frecuencia }}">
+                        <label class="form-check-label" for="check{{ frecuencia }}">
+                            {{ frecuencia }}
                         </label>
                     </li>
-                    <li>
-                        <input class="form-check-input" type="checkbox" value="mensualemente" id="checkMensualmente">
-                        <label class="form-check-label" for="checkMensualmente">
-                            Mensualmente
-                        </label>
-                    </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
