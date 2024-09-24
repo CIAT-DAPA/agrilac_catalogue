@@ -68,6 +68,17 @@ class InstitutionPage(Page):
 
         return context
     
+    # def can_edit(self, user):
+    #     # Los dueños pueden editar la página de su institución
+    #     if self.owner_user == user:
+    #         return True
+
+    #     # Los socios pueden editar los datasets pero no la página principal de la institución
+    #     if self.institution_memberships.filter(user=user).exists():
+    #         return False  # No permitir la edición de la página, solo datasets
+
+    #     return False  # Si no es dueño ni socio, no puede editar
+    
 
 class InstitutionMembership(models.Model):
     user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE, related_name='membership_set')
