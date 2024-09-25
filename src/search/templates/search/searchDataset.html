@@ -2,7 +2,32 @@
 {% block content %}
 {% if search_results %}
 {% for result in search_results %}
-<div class="card mb-3">
+<!-- Modal -->
+<div class="modal fade" id="requestModal{{ result.slug }}" tabindex="-1"
+    aria-labelledby="requestModalLabel{{ result.slug }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="requestModalLabel{{ result.slug }}">Solicitud de acceso</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h2>{{ result.title }}</h2>
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Escribe con que motivo necesitas este dataset"
+                        id="floatingTextarea2{{ result.slug }}" style="height: 100px"></textarea>
+                    <label for="floatingTextarea2">Motivo de la solicitud</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Enviar solicitud</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Resultado -->
+<div class="card mb-3 shadow-sm">
     <div class="card-body">
         <div class="row">
             <div class="d-flex justify-content-between align-items-center">
@@ -22,7 +47,7 @@
                                 {% if result.file_format %}
                                 {% for format in result.file_format|split:"," %}
                                 <span
-                                    class="badge text-bg-secondary ms-2 text-uppercase bg-success bg-opacity-75 rounded-pill fs-5">
+                                    class="badge text-bg-secondary ms-2 text-uppercase bg-success bg-opacity-75 rounded-pill fs-6">
                                     {{ format }}
                                 </span>
                                 {% endfor %}
@@ -49,7 +74,7 @@
                 </a>
                 {% elif result.type_dataset == "restricted" %}
                 <button type="button" class="btn btn-primary px-4 py-2 rounded-3" data-bs-toggle="modal"
-                    data-bs-target="#requestModal">
+                    data-bs-target="#requestModal{{ result.slug }}">
                     Solicitar acceso
                 </button>
                 {% endif %}
@@ -141,6 +166,23 @@
     </ul>
 </nav>
 {% elif search_query %}
-No results found
+<div class="card mb-3 shadow-sm">
+    <div class="card-body">
+        <div class="row">
+            <div class="d-flex aling-items-center justify-content-evenly">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-mood-sad">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M9 10l.01 0" />
+                    <path d="M15 10l.01 0" />
+                    <path d="M9.5 15.25a3.5 3.5 0 0 1 5 0" />
+                </svg>
+                <h3 class="text-center">No se encontraron resultados para la búsqueda "{{ search_query }}"</h3>
+            </div>
+        </div>
+    </div>
+</div>
 {% endif %}
 {% endblock %}
