@@ -36,6 +36,7 @@ def catalogue(request):
             frecuencias.update(dataset.upload_frequency.split(','))
 
     return render(request, 'datasets/catalogue.html', {
+        'title': 'Catálogo de datos',
         'datasets': datasets,
         'instituciones': instituciones,
         'keywords': keywords,

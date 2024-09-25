@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags custom_filters%}
+{% block title %}{{ title }}{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/search_results.css' %}">
 <div class="bg-catalogue bg-body-tertiary">
