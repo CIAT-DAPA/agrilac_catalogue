@@ -27,7 +27,8 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 INSTALLED_APPS = [
     "users",         # Primero la app que define el modelo de usuario
     "institutions",  # Luego la app que depende de usuarios
-    "datasets",
+    "datasets",      # Depende de los dos de arriba
+    "access_requests", # Depende de users y datasets
     "home",
     "search",
     "wagtail.contrib.forms",

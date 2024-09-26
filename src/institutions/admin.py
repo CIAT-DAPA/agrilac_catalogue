@@ -1,3 +1,8 @@
+# institutions/admin.py
 from django.contrib import admin
+from .models import InstitutionPage, InstitutionMembership
 
-# Register your models here.
+admin.site.register(InstitutionPage)
+admin.site.register(InstitutionMembership)
+
+

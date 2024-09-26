@@ -14,6 +14,8 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     path("search/", include('search.urls')),
     path('datasets/', include('datasets.urls')),
+    path('institutions/', include('institutions.urls')),
+    path('requests/', include('access_requests.urls')),
 ]
 
 

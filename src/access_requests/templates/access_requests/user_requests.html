@@ -1,0 +1,43 @@
+<!-- access_requests/templates/access_requests/user_requests.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2>Mis solicitudes de acceso</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Dataset</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>{{ request.dataset.title }}</td>
+                <td>
+                    {% if request.status == 'pending' %}
+                    <span class="badge bg-warning">Esperando aprobación</span>
+                    {% elif request.status == 'approved' %}
+                    <span class="badge bg-success">Aprobada</span>
+                    {% else %}
+                    <span class="badge bg-danger">Denegada</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if request.status == 'pending' %}
+                    <form action="{% url 'delete_request' request.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+                        <li class="list-group-item text-center">No hay solicitudes de acceso.</li>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}
