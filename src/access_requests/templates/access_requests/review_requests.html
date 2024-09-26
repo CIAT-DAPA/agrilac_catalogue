@@ -1,0 +1,101 @@
+<!-- access_requests/templates/access_requests/review_requests.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2>Solicitudes pendientes</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Institución</th>
+                <th>Dataset</th>
+                <th>Motivo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>{{ request.user.get_full_name }}</td>
+                <td>{{ request.dataset.institution_related }}</td>
+                <td>{{ request.dataset.title }}</td>
+                <td>{{ request.reason }}</td>
+                <td>
+                    <!-- Botón para mostrar el modal de Aceptar -->
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal{{ request.id }}">Aceptar</button>
+                    
+                    <!-- Botón para mostrar el modal de Rechazar -->
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#denyModal{{ request.id }}">Rechazar</button>
+                
+                </td>
+            </tr>
+
+            
+            <!-- Modal para Aceptar -->
+            <div class="modal fade" id="approveModal{{ request.id }}" tabindex="-1" aria-labelledby="approveModalLabel{{ request.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{% url 'process_request' request.id 'approve' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="approveModalLabel{{ request.id }}">Aceptar solicitud</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h3>{{ request.dataset.title }}</h3>
+                                <div class="d-flex flex-column bd-highlight mb-3">
+                                    <h5>{{ request.user.get_full_name }}</h5>
+                                    <p>{{ request.dataset.institution_related }}</p>
+                                    
+                                </div>
+                            
+                                <p><strong>Motivo:</strong> {{ request.reason}}</p>
+                                <div class="form-floating">
+                                    <textarea class="form-control" name="access_response" id="approveResponse{{ request.id }}" placeholder="Instrucciones de acceso" style="height: 100px"></textarea>
+                                    <label for="approveResponse{{ request.id }}">Instrucciones de acceso</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-success">Aceptar solicitud</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para Rechazar -->
+            <div class="modal fade" id="denyModal{{ request.id }}" tabindex="-1" aria-labelledby="denyModalLabel{{ request.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{% url 'process_request' request.id 'deny' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="denyModalLabel{{ request.id }}">Rechazar solicitud</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Usuario:</strong> {{ request.user.get_full_name }}</p>
+                                <p><strong>Dataset:</strong> {{ request.dataset.title }}</p>
+                                <p><strong>Institución:</strong> {{ request.dataset.institution_related }}</p>
+                                <div class="form-floating">
+                                    <textarea class="form-control" name="access_response" id="denyResponse{{ request.id }}" placeholder="Motivo de rechazo" style="height: 100px"></textarea>
+                                    <label for="denyResponse{{ request.id }}">Motivo de rechazo</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-danger">Rechazar solicitud</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                        <li class="list-group-item text-center">No hay solicitudes de acceso.</li>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

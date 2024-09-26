@@ -25,4 +25,10 @@ class AddPartnerForm(forms.Form):
             institution=self.institution,
             defaults={'role': 'partner'}
         )
+
+        # Asegurarse de que el rol del usuario se actualice a 'partner'
+        if partner.role != 'partner':
+            partner.role = 'partner'
+            partner.save()
+
         return membership

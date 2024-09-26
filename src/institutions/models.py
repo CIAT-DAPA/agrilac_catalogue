@@ -46,6 +46,25 @@ class InstitutionPage(Page):
     def __str__(self):
         return self.name
     
+    def save(self, *args, **kwargs):
+        previous_owner = None
+        if self.pk:
+            # Verificar si ya existe un owner previo antes de esta edición
+            previous_owner = InstitutionPage.objects.filter(pk=self.pk).first().owner_user
+
+        super().save(*args, **kwargs)
+        
+        # Si hay un nuevo owner_user, se le asigna el rol 'owner'
+        if self.owner_user:
+            self.owner_user.role = 'owner'
+            self.owner_user.save()
+
+        # Si había un owner anterior que ha sido cambiado, revierte su rol a 'visitor' o 'partner'
+        if previous_owner and previous_owner != self.owner_user:
+            previous_owner.role = 'visitor'  # o el rol que consideres adecuado
+            previous_owner.save()
+
+    
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
@@ -67,17 +86,7 @@ class InstitutionPage(Page):
         context['page_obj'] = page_obj
 
         return context
-    
-    # def can_edit(self, user):
-    #     # Los dueños pueden editar la página de su institución
-    #     if self.owner_user == user:
-    #         return True
 
-    #     # Los socios pueden editar los datasets pero no la página principal de la institución
-    #     if self.institution_memberships.filter(user=user).exists():
-    #         return False  # No permitir la edición de la página, solo datasets
-
-    #     return False  # Si no es dueño ni socio, no puede editar
     
 
 class InstitutionMembership(models.Model):
