@@ -34,6 +34,8 @@
     {% block extra_css %}
     {# Override this in templates to add extra stylesheets #}
     {% endblock %}
+    {# Favicon #}
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo.ico' %}">
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -42,15 +44,7 @@
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                 <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
-                    <svg class="me-2" width="20" height="24" viewBox="0 0 20 24" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14.3564 3.20005L0.5 11.2V6.40005L10.2026 0.800049L14.3564 3.20005Z"
-                            fill="currentColor" />
-                        <path d="M19.9051 6.40005V9.16928L2.9 18.9847L0.5 17.6V14.9949L17.6385 5.09748L19.9051 6.40005Z"
-                            fill="currentColor" />
-                        <path d="M6.18205 20.8821L19.9051 12.9642V17.6L10.2026 23.2L6.18205 20.8821Z"
-                            fill="currentColor" />
-                    </svg>
+                    <img src="/static/img/logo.png" height="50" class="me-2" alt="logo" />
                     Data Catalogue
                 </a>
 
@@ -94,33 +88,60 @@
                 </ul>
                 <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small border-end">
                     {% if request.user.is_authenticated %}
-                        
-                        {% if request.user.role == 'owner' %}
-                        <!-- Mostrar el botón Socios si el usuario es Dueño -->
-                        <li>
-                            <a href="{% url 'partners' %}" class="nav-link text-white">
-                                <svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>
-                                Mis socios
-                            </a>
-                        </li>
+
+                    {% if request.user.role == 'owner' %}
+                    <!-- Mostrar el botón Socios si el usuario es Dueño -->
+                    <li>
+                        <a href="{% url 'partners' %}" class="nav-link text-white">
+                            <svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-users">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                            </svg>
+                            Mis socios
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Mostrar el botón Solicitudes con diferentes URLs según el rol -->
+                    <li>
+                        {% if request.user.role == 'owner' or request.user.role == 'partner' %}
+                        <!-- Si es Dueño o Socio -->
+                        <a href="{% url 'review_requests' %}" class="nav-link text-white">
+                            <svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-file-spark">
+                                <path stroke="none" d="M0 0h24H0z" fill="none" />
+                                <path
+                                    d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" />
+                                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                <path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" />
+                            </svg>
+                            Solicitudes
+                        </a>
+                        {% else %}
+                        <!-- Si es Visitante -->
+                        <a href="{% url 'user_access_requests' %}" class="nav-link text-white">
+                            <svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-file-spark">
+                                <path stroke="none" d="M0 0h24H0z" fill="none" />
+                                <path
+                                    d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" />
+                                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                <path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" />
+                            </svg>
+                            Solicitudes
+                        </a>
                         {% endif %}
-                        
-                        <!-- Mostrar el botón Solicitudes con diferentes URLs según el rol -->
-                        <li>
-                            {% if request.user.role == 'owner' or request.user.role == 'partner' %}
-                            <!-- Si es Dueño o Socio -->
-                            <a href="{% url 'review_requests' %}" class="nav-link text-white">
-                                <svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-spark"><path stroke="none" d="M0 0h24H0z" fill="none"/><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" /></svg>
-                                Solicitudes
-                            </a>
-                            {% else %}
-                            <!-- Si es Visitante -->
-                            <a href="{% url 'user_access_requests' %}" class="nav-link text-white">
-                                <svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-spark"><path stroke="none" d="M0 0h24H0z" fill="none"/><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" /></svg>
-                                Solicitudes
-                            </a>
-                            {% endif %}
-                        </li>
+                    </li>
                     {% endif %}
                     <li>
                         <a href="{% slugurl 'about-us' %}" class="nav-link text-white">
@@ -156,7 +177,7 @@
     {% block content %}{% endblock %}
     {% if messages %}
     <ul class="messages">
-    {% for message in messages %}
+        {% for message in messages %}
         <li class="{% if message.tags %}{{ message.tags }}{% endif %}">
             {{ message }}
         </li>
@@ -168,22 +189,14 @@
             <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
                 <a href="/"
                     class="col-md-4 justify-content-center mb-3 mb-md-0 me-md-auto text-decoration-none text-white">
-                    <svg class="me-2" width="20" height="24" viewBox="0 0 20 24" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14.3564 3.20005L0.5 11.2V6.40005L10.2026 0.800049L14.3564 3.20005Z"
-                            fill="currentColor" />
-                        <path d="M19.9051 6.40005V9.16928L2.9 18.9847L0.5 17.6V14.9949L17.6385 5.09748L19.9051 6.40005Z"
-                            fill="currentColor" />
-                        <path d="M6.18205 20.8821L19.9051 12.9642V17.6L10.2026 23.2L6.18205 20.8821Z"
-                            fill="currentColor" />
-                    </svg>
+                    <img src="/static/img/logo.png" height="50" class="me-2" alt="logo" />
                     Data Catalogue
                 </a>
 
                 <ul class="nav col-md-4 justify-content-end">
                     <li class="nav-item"><a href="/" class="nav-link px-2 text-white">Home</a></li>
-                    <li class="nav-item"><a href="{% url 'catalogue' %}"
-                            class="nav-link px-2 text-white">Catálogo</a></li>
+                    <li class="nav-item"><a href="{% url 'catalogue' %}" class="nav-link px-2 text-white">Catálogo</a>
+                    </li>
                     <li class="nav-item">
                         <a href="{% slugurl 'partner' %}" class="nav-link px-2 text-white">Socios</a>
                     </li>
@@ -192,16 +205,12 @@
         </div>
     </div>
     {# Global javascript #}
-    <script type="text/javascript" src="{% static 'js/catalogue.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     {% block extra_js %}
     {# Override this in templates to add extra javascript #}
     {% endblock %}
-
-    
-
 
 </body>
 
