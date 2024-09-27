@@ -18,8 +18,8 @@ def catalogue(request):
     for dataset in datasets:
         if dataset.geo_data.exists():
             for geo in dataset.geo_data.all():
-                if geo.region_name:
-                    ubicaciones.update(geo.region_name.split(','))
+                if geo.region_name and geo.municipality_name:
+                    ubicaciones.add(f"{geo.region_name}, {geo.municipality_name}")
 
     # Obtener las variables sin duplicados
     variables = set()

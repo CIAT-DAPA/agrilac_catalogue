@@ -4,6 +4,7 @@ from django.template.response import TemplateResponse
 from wagtail.models import Page
 
 from datasets.models import DatasetPage
+from django.db.models import Q
 
 # To enable logging of search queries for use with the "Promoted search results" module
 # <https://docs.wagtail.org/en/stable/reference/contrib/searchpromotions.html>
@@ -61,17 +62,23 @@ def searchDatasets(request):
 
     # Search
     if search_query:
-        # Filtrar solo los DatasetPage cuyo título contenga el search_query
-        search_results = DatasetPage.objects.live().filter(title__icontains=search_query)
+        # Filtrar DatasetPage cuyo título, descripción o institución contenga el search_query
+        search_results = DatasetPage.objects.live().filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(institution_related__name__icontains=search_query)
+        )
     else:
         # Mostrar todos los DatasetPage si no hay consulta
         search_results = DatasetPage.objects.live()
 
     # Date range
-    if start_date:
-        search_results = search_results.filter(start_date__gte=start_date)
-    if end_date:
-        search_results = search_results.filter(end_date__lte=end_date)
+    if start_date and end_date:
+        search_results = search_results.filter(start_date__lte=start_date, end_date__gte=end_date)
+    elif start_date:
+        search_results = search_results.filter(start_date__lte=start_date)
+    elif end_date:
+        search_results = search_results.filter(end_date__gte=end_date)
 
     # Access
     if type_dataset:

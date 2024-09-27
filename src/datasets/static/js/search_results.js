@@ -1,6 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
   const searchInput = document.getElementById("searchInput");
   const resultsContainer = document.getElementById("resultsContainer");
+  const locationSearch = document.getElementById("location-search");
+
+  if (!searchInput || !resultsContainer || !locationSearch) {
+    console.error("Missing required DOM elements.");
+    return;
+  }
 
   // Función para realizar la búsqueda con filtros
   function search(query, page = 1) {
@@ -98,4 +104,20 @@ document.addEventListener("DOMContentLoaded", function () {
   filters.forEach((filter) =>
     filter.addEventListener("change", () => search(searchInput.value))
   );
+
+  // Filtrado dinámico de ubicaciones
+  locationSearch.addEventListener("input", function () {
+    var filter = this.value.toLowerCase();
+    var listItems = document.querySelectorAll("#location-filter li");
+
+    listItems.forEach(function (item) {
+      var text = item.textContent.toLowerCase();
+      var checkbox = item.querySelector("input[type='checkbox']");
+      if (text.includes(filter) || checkbox.checked) {
+        item.style.display = "";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  });
 });
