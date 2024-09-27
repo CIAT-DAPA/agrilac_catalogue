@@ -165,7 +165,7 @@
         {% endif %}
     </ul>
 </nav>
-{% elif search_query %}
+{% else %}
 <div class="card mb-3 shadow-sm">
     <div class="card-body">
         <div class="row">
@@ -179,7 +179,7 @@
                     <path d="M15 10l.01 0" />
                     <path d="M9.5 15.25a3.5 3.5 0 0 1 5 0" />
                 </svg>
-                <h3 class="text-center">No se encontraron resultados para la búsqueda "{{ search_query }}"</h3>
+                <h3 class="text-center">No se encontraron resultados para la búsqueda</h3>
             </div>
         </div>
     </div>
