@@ -73,3 +73,11 @@ def get_context(self, request, *args, **kwargs):
         context['page_obj'] = page_obj
 
         return context
+
+def institution_list(request):
+    instituciones = InstitutionPage.objects.live()
+
+    return render(request, 'institutions/institution_list.html', {
+        'title': 'Instituciones',
+        'instituciones': instituciones,
+    })
