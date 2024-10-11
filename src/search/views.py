@@ -143,11 +143,10 @@ def searchInstitution(request):
 
     # Search
     if search_query:
-        # Filtrar InstitutionPage cuyo título, descripción o institución contenga el search_query
+        # Filtrar InstitutionPage cuyo título, descripción o 
         search_results = InstitutionPage.objects.live().filter(
             Q(title__icontains=search_query) |
-            Q(description__icontains=search_query) |
-            Q(institution_related__name__icontains=search_query)
+            Q(description__icontains=search_query)
         )
     else:
         # Mostrar todos los InstitutionPage si no hay consulta
