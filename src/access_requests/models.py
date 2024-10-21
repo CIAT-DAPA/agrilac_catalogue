@@ -18,8 +18,8 @@ class AccessRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     access_response = models.TextField(blank=True, null=True)
     
-    class Meta:
-        unique_together = ('dataset', 'user')  # Un usuario solo puede solicitar una vez el acceso a un dataset
+    # class Meta:
+    #     unique_together = ('dataset', 'user')  # Un usuario solo puede solicitar una vez el acceso a un dataset
 
     def __str__(self):
         return f"{self.user} - {self.dataset.title} ({self.status})"
