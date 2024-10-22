@@ -8,6 +8,11 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from search import views as search_views
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
@@ -16,6 +21,11 @@ urlpatterns = [
     path('datasets/', include('datasets.urls')),
     path('institutions/', include('institutions.urls')),
     path('requests/', include('access_requests.urls')),
+    # Rutas para obtener y refrescar tokens JWT
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # Incluir las URLs de tu aplicación si las tienes
+    path('api_web/', include('api_web.urls')),
 ]
 
 
