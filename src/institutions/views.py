@@ -11,7 +11,6 @@ def institution_partners(request):
     # Obtener la institución del usuario que es dueño
     institution = get_object_or_404(InstitutionPage, owner_user=request.user)
     partners = institution.membership_set.select_related('user')
-    print(partners)
 
     # Procesamos el formulario de adición de socio
     if request.method == 'POST':
@@ -49,12 +48,12 @@ def remove_partner(request, institution_id, partner_id):
 
 def institution_detail(request, pk):
     institution = get_object_or_404(InstitutionPage, pk=pk)
+    
     return render(request, 'institutions/institution_page.html', {'page': institution})
 
 
 def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
         datasets = self.datasets.all()
 
         # Paginador - Mostramos 5 datasets por página

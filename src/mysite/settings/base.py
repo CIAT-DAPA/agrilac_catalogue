@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "access_requests", # Depende de users y datasets
     "home",
     "search",
+    "activity_logs",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",

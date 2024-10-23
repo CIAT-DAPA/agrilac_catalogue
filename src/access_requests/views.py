@@ -62,13 +62,17 @@ def process_request(request, request_id, action):
         access_request.access_response = access_response
         access_request.save()
 
-        # Enviar correo al usuario solicitante
-        send_access_request_email(
-            access_request.user.email,
-            access_request.dataset.title,
-            access_request.access_response,
-            access_request.status
-        )
+        try:
+            send_access_request_email(
+                access_request.user.email,
+                access_request.dataset.title,
+                access_request.access_response,
+                access_request.status
+            )
+
+        except:
+            print("No se pudo enviar el correo")
+        
     
     return redirect('review_requests')
 

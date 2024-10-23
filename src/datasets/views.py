@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import DatasetPage
+from activity_logs.utils import log_user_activity
 
 def catalogue(request):
     datasets = DatasetPage.objects.live()
@@ -44,3 +45,18 @@ def catalogue(request):
         'variables': variables,
         'frecuencias': frecuencias,
     })
+
+
+def dataset_detail(request, pk):
+    dataset = get_object_or_404(DatasetPage, pk=pk)
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    # Registrar la actividad
+    if request.user:
+        log_user_activity(
+            user=request.user,
+            action=f"Dataset viewed: {dataset.title}",
+            request=request,
+            extra_data={'dataset_viewed': dataset.institution_related}
+        )
+    
+    return render(request, 'datasets/dataset_page.html', {'page': dataset})

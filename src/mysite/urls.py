@@ -16,6 +16,7 @@ urlpatterns = [
     path('datasets/', include('datasets.urls')),
     path('institutions/', include('institutions.urls')),
     path('requests/', include('access_requests.urls')),
+    #path('logs/', include('activity_logs.urls')),
 ]
 
 

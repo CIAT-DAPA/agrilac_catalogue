@@ -4,3 +4,4 @@
 
 #*.sqlite3
 .venv/Lib/site-packages/distutils-precedence.pth
+note.txt

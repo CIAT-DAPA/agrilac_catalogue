@@ -5,6 +5,8 @@ from wagtail.models import Page
 
 from datasets.models import DatasetPage
 from institutions.models import InstitutionPage
+from activity_logs.utils import log_user_activity
+
 from django.db.models import Q
 
 # To enable logging of search queries for use with the "Promoted search results" module
@@ -23,10 +25,14 @@ def search(request):
     if search_query:
         search_results = Page.objects.live().search(search_query)
 
-        # To log this query for use with the "Promoted search results" module:
-
-        # query = Query.get(search_query)
-        # query.add_hit()
+        # Registrar la actividad
+        if  request.user.is_authenticated:
+            log_user_activity(
+                user=request.user,
+                action=f"Search performed: {search_query}",
+                request=request,
+                extra_data={'search_query': search_query}
+            )
 
     else:
         search_results = Page.objects.live()
@@ -39,6 +45,8 @@ def search(request):
         search_results = paginator.page(1)
     except EmptyPage:
         search_results = paginator.page(paginator.num_pages)
+
+    
 
     return TemplateResponse(
         request,
@@ -126,6 +134,15 @@ def searchDatasets(request):
         search_results = paginator.page(1)
     except EmptyPage:
         search_results = paginator.page(paginator.num_pages)
+
+     # Registrar la actividad
+    if search_query and request.user.is_authenticated:
+        log_user_activity(
+            user=request.user,
+            action=f"Search performed: {search_query}",
+            request=request,
+            extra_data={'search_query': search_query}
+        )
 
     return TemplateResponse(
         request,
