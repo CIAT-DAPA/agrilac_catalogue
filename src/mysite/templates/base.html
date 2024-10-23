@@ -161,12 +161,18 @@
                             {{ request.user.username }}
                         </a>
                         <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuLink">
-                            <li class="border-bottom border-dark-subtle mb-2">
-                                <a class="dropdown-item" href="#">
+                            <li class="">
+                                <p class="dropdown-item-text mb-1">
                                     Rol: <strong class="text-capitalize">{{ request.user.role }}</strong>
+                                </p>
+                            </li>
+                            {% if request.user.role != 'visitor' %}
+                            <li class="border-bottom border-dark-subtle mb-2">
+                                <a class="dropdown-item" target="_blank" href="/admin">
+                                    Ir al panel administrativo
                                 </a>
                             </li>
-
+                            {% endif %}
                             <li>
                                 <form method="POST" action="{% url 'logout' %}">
                                     {% csrf_token %}
@@ -188,9 +194,6 @@
                             </li>
                         </ul>
                     </li>
-
-
-
                     {% else %}
                     <li>
                         <a href="/admin/" class="btn btn-outline-light ms-2">
