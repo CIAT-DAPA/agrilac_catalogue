@@ -7,22 +7,26 @@
     aria-labelledby="requestModalLabel{{ result.slug }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
+            <!-- El formulario debe enviar los datos a la vista correspondiente -->
+         <form action="{% url 'request_access' result.id %}" method="POST" style="display:inline;">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="requestModalLabel{{ result.slug }}">Solicitud de acceso</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               <h1 class="modal-title fs-5" id="requestModalLabel">Solicitud de acceso</h1>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h2>{{ result.title }}</h2>
-                <div class="form-floating">
-                    <textarea class="form-control" placeholder="Escribe con que motivo necesitas este dataset"
-                        id="floatingTextarea2{{ result.slug }}" style="height: 100px"></textarea>
-                    <label for="floatingTextarea2">Motivo de la solicitud</label>
-                </div>
+               <h2>{{ result.title }}</h2>
+               <div class="form-floating">
+                  <textarea class="form-control" style="height: 300px" placeholder="Escribe con qué motivo necesitas este dataset"
+                     id="request_reason" name="reason" style="height: 100px" required></textarea>
+                  <label for="request_reason">Motivo de la solicitud</label>
+               </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary">Enviar solicitud</button>
+               {% csrf_token %}
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+               <button type="submit" class="btn btn-primary">Enviar solicitud</button>
             </div>
+         </form>
         </div>
     </div>
 </div>

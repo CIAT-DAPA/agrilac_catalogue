@@ -9,6 +9,8 @@ from activity_logs.utils import log_user_activity
 
 from django.db.models import Q
 
+from users.models import CustomUser
+
 # To enable logging of search queries for use with the "Promoted search results" module
 # <https://docs.wagtail.org/en/stable/reference/contrib/searchpromotions.html>
 # uncomment the following line and the lines indicated in the search function
@@ -186,6 +188,45 @@ def searchInstitution(request):
     return TemplateResponse(
         request,
         "search/searchInstitution.html",
+        {
+            "search_query": search_query,
+            "search_results": search_results,
+            "page_obj": page_obj,
+        },
+    )
+
+def search_users(request):
+    search_query = request.GET.get("query", None)
+    page = request.GET.get("page", 1)
+
+    # Search
+    if search_query:
+        # Filtrar InstitutionPage cuyo título, descripción o 
+        search_results = CustomUser.objects.all().filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query)
+        )
+    else:
+        # Mostrar todos los InstitutionPage si no hay consulta
+        search_results = CustomUser.objects.all()
+
+    # Remove duplicates
+    search_results = search_results.distinct()
+
+    # Pagination
+    paginator = Paginator(search_results, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    try:
+        search_results = paginator.page(page)
+    except PageNotAnInteger:
+        search_results = paginator.page(1)
+    except EmptyPage:
+        search_results = paginator.page(paginator.num_pages)
+
+    return TemplateResponse(
+        request,
+        "search/search_users.html",
         {
             "search_query": search_query,
             "search_results": search_results,
