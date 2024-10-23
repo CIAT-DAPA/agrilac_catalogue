@@ -8,11 +8,11 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-4">
-                            <i class="bi bi-people-fill"></i> Socios
+                            <i class="bi bi-people-fill"></i> Colaboradores
                         </h3>
                         <!-- Botón para abrir el modal -->
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPartnerModal">
-                            + Nuevo Socio
+                            + Nuevo Colaborador
                         </button>
                     </div>
 
@@ -60,26 +60,37 @@
     </div>
 </div>
 
-<!-- Modal para agregar socio -->
+<!-- Modal para agregar socios -->
 <div class="modal fade" id="addPartnerModal" tabindex="-1" aria-labelledby="addPartnerModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addPartnerModalLabel">Agregar Socio</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <input type="search" id="searchInput" class="form-control ps-5" placeholder="Buscar..."
-                            aria-label="Search">
-        <div id="resultsContainer"></div>
-        <form method="post" action="{% url 'add_partner' %}">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit" class="btn btn-primary">Agregar</button>
-        </form>
-      </div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPartnerModalLabel">Agregar Socios</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Barra de búsqueda -->
+                <div class="position-relative w-100 card shadow-sm">
+                    <span class="position-absolute search-icon mt-1 ms-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-search">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+                            <path d="M21 21l-6 -6" />
+                        </svg>
+                    </span>
+                    <input type="search" id="searchInput" class="form-control ps-5" placeholder="Buscar..."
+                        aria-label="Search">
+                </div>
+                
+                <!-- Contenedor donde se mostrarán los resultados de búsqueda -->
+                <div id="resultsContainer" class="mt-4"></div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-<script src="{% static 'js/search_users_results.js' %}"></script>
-{% endblock %}
+
+  <script src="{% static 'js/search_users_results.js' %}"></script>
+  {% endblock %}

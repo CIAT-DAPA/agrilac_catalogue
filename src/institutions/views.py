@@ -2,8 +2,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+
+from users.models import CustomUser
 from .models import InstitutionPage, InstitutionMembership
 from .forms import AddPartnerForm
+from django.contrib import messages
+
 
 
 @login_required
@@ -12,21 +16,27 @@ def institution_partners(request):
     institution = get_object_or_404(InstitutionPage, owner_user=request.user)
     partners = institution.membership_set.select_related('user')
 
-    # Procesamos el formulario de adición de socio
+    # Procesamos el formulario de adición de socios con checkboxes
     if request.method == 'POST':
-        form = AddPartnerForm(request.POST, institution=institution)
-        if form.is_valid():
-            form.save()
-            return redirect('partners')  # Redirigimos de vuelta a la lista de socios
-    else:
-        form = AddPartnerForm(institution=institution)
+        selected_user_ids = request.POST.getlist('selected_users')  # Obtener IDs de los usuarios seleccionados
+        if selected_user_ids:
+            for user_id in selected_user_ids:
+                user = CustomUser.objects.get(id=user_id)
+                InstitutionMembership.objects.get_or_create(
+                    user=user, 
+                    institution=institution, 
+                    defaults={'role': 'partner'}
+                )
+            messages.success(request, "Socios agregados exitosamente.")
+        else:
+            messages.error(request, "No se seleccionaron usuarios.")
+        return redirect('partners')  # Redirigimos de vuelta a la lista de socios
 
+    # Si es una solicitud GET, mostramos el formulario y los socios actuales
     return render(request, 'institutions/institution_partners.html', {
         'institution': institution,
         'partners': partners,  # Pasamos los socios al contexto
-        'form': form  # Pasamos el formulario al contexto
     })
-
 
 @login_required
 def remove_partner(request, institution_id, partner_id):
@@ -35,10 +45,18 @@ def remove_partner(request, institution_id, partner_id):
 
     # Buscar la relación entre la institución y el socio
     membership = get_object_or_404(InstitutionMembership, institution=institution, user_id=partner_id)
+    user = membership.user 
     
     if request.method == 'POST':
         # Si se confirma la eliminación, eliminar la relación (membership)
         membership.delete()
+
+        # Verificar si el usuario pertenece a alguna otra institución
+        if not InstitutionMembership.objects.filter(user=user).exists():
+            # Si no pertenece a ninguna otra institución, cambiamos su rol a 'visitor'
+            user.role = CustomUser.VISITOR
+            user.save()
+
         return redirect('partners')
     
     # Si se accede por GET, redirigir a la página de detalles de la institución

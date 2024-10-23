@@ -1,45 +1,22 @@
-{% load static wagtailcore_tags custom_filters%}
+{% load static wagtailcore_tags custom_filters %}
 {% block content %}
-{% if search_results %}
-{% for result in search_results %}
-<!-- Resultado -->
-<div class="card mb-3 mt-3 shadow-sm">
-    <div class="card-body">
-        <div class="row">
-                <div class="d-flex align-items-center mb-3">
-                    <h2 class="me-2 mb-0">{{ result.user}}</h2>
-                </div>
-                <div class="text-muted">
-                    <ul class="list-unstyled">
-                        <li class="d-flex align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" aria-label="Email"
-                                class="icon icon-tabler icons-tabler-outline icon-tabler-mail me-2">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path
-                                    d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
-                                <path d="M3 7l9 6l9 -6" />
-                            </svg>
-                            {{result.first_name }}
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" aria-label="Teléfono"
-                                class="icon icon-tabler icons-tabler-outline icon-tabler-phone me-2">
-                                <path stroke="none" d="M0 0h24H0z" fill="none" />
-                                <path
-                                    d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
-                            </svg>
-                            {{result.last_name }}
-                        </li>
-                    </ul>
-                </div>
-            </a>
-        </div>
-    </div>
-</div>
-{% endfor %}
-{% endif %}
+<form id="addPartnersForm" method="post" action="{% url 'add_partner' %}">
+    {% csrf_token %}
+    
+    <ul class="list-unstyled">
+        {% if search_results %}
+        {% for result in search_results %}
+        <li class="text-capitalize mb-3">
+            <input class="form-check-input" type="checkbox" name="selected_users" value="{{ result.id }}"
+                id="check{{ result.id }}">
+            <label class="form-check-label ms-2" for="check{{ result.id }}">
+                 {{ result.first_name }} {{ result.last_name }} ({{ result.email }})
+            </label>
+        </li>
+        {% endfor %}
+        {% endif %}
+    </ul>
+    
+    <button type="submit" class="btn btn-primary mt-3">Agregar socios seleccionados</button>
+</form>
 {% endblock %}
