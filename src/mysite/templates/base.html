@@ -145,8 +145,11 @@
                     {% endif %}
                 </ul>
                 <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small ">
+                    {% if request.user.is_authenticated %}
+
                     <li>
-                        <a href="/admin/" target="_blank" class="nav-link text-white">
+                        <a href="#" class="nav-link text-white dropdown-toggle" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24"
                                 height="24" viewBox="0 0 24 24" fill="currentColor"
                                 class="icon icon-tabler icons-tabler-filled icon-tabler-user">
@@ -155,9 +158,56 @@
                                 <path
                                     d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" />
                             </svg>
-                            Admin
+                            {{ request.user.username }}
+                        </a>
+                        <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuLink">
+                            <li class="border-bottom border-dark-subtle mb-2">
+                                <a class="dropdown-item" href="#">
+                                    Rol: <strong class="text-capitalize">{{ request.user.role }}</strong>
+                                </a>
+                            </li>
+
+                            <li>
+                                <form method="POST" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-logout me-2">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path
+                                                d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                                            <path d="M9 12h12l-3 -3" />
+                                            <path d="M18 15l3 -3" />
+                                        </svg>
+                                        Cerrar sesión
+                                    </button>
+                                </form>
+
+                            </li>
+                        </ul>
+                    </li>
+
+
+
+                    {% else %}
+                    <li>
+                        <a href="/admin/" class="btn btn-outline-light ms-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-login-2 me-2">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M9 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2" />
+                                <path d="M3 12h13l-3 -3" />
+                                <path d="M13 15l3 -3" />
+                            </svg>
+                            Iniciar sesión
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

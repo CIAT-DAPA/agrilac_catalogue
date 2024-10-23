@@ -198,3 +198,5 @@ WAGTAILADMIN_BASE_URL = "http://example.com"
 WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip']
 AUTH_USER_MODEL = 'users.CustomUser'
 
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
