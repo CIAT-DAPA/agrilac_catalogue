@@ -1,0 +1,22 @@
+{% load static wagtailcore_tags custom_filters %}
+{% block content %}
+<form id="addPartnersForm" method="post" action="{% url 'add_partner' %}">
+    {% csrf_token %}
+    
+    <ul class="list-unstyled">
+        {% if search_results %}
+        {% for result in search_results %}
+        <li class="text-capitalize mb-3">
+            <input class="form-check-input" type="checkbox" name="selected_users" value="{{ result.id }}"
+                id="check{{ result.id }}">
+            <label class="form-check-label ms-2" for="check{{ result.id }}">
+                 {{ result.first_name }} {{ result.last_name }} ({{ result.email }})
+            </label>
+        </li>
+        {% endfor %}
+        {% endif %}
+    </ul>
+    
+    <button type="submit" class="btn btn-primary mt-3">Agregar socios seleccionados</button>
+</form>
+{% endblock %}

@@ -5,6 +5,7 @@ from .models import AccessRequest
 from datasets.models import DatasetPage
 from .forms import AccessRequestForm
 from django.contrib import messages
+from notifications.emails import send_access_request_email
 
 # Vista para que el usuario solicite acceso
 @login_required
@@ -31,8 +32,6 @@ def request_access(request, dataset_id):
 @login_required
 def review_requests(request):
     user_institutions = request.user.institution_memberships.all()
-    print(request.user.institution_memberships.all())
-    print(request.user)
     requests = AccessRequest.objects.filter(dataset__institution_related__in=user_institutions, status='pending')
     return render(request, 'access_requests/review_requests.html', {
         'requests': requests,
@@ -47,12 +46,12 @@ def user_access_requests(request):
     })
 
 # Aprobar o rechazar solicitud
+
 @login_required
 def process_request(request, request_id, action):
     access_request = get_object_or_404(AccessRequest, pk=request_id, status='pending')
     
     if request.method == 'POST':
-        # Obtener el comentario del formulario
         access_response = request.POST.get('access_response', '')
 
         if action == 'approve':
@@ -60,9 +59,20 @@ def process_request(request, request_id, action):
         elif action == 'deny':
             access_request.status = 'denied'
         
-        # Guardar el comentario en access_response
         access_request.access_response = access_response
         access_request.save()
+
+        try:
+            send_access_request_email(
+                access_request.user.email,
+                access_request.dataset.title,
+                access_request.access_response,
+                access_request.status
+            )
+
+        except:
+            print("No se pudo enviar el correo")
+        
     
     return redirect('review_requests')
 

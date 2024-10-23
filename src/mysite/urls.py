@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.urls import include, path
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-from search import views as search_views
+from users.views import CustomLoginView
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -15,6 +16,8 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
+    path('admin/login/', CustomLoginView.as_view(), name='wagtailadmin_login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", include('search.urls')),
@@ -26,7 +29,8 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # Incluir las URLs de tu aplicación si las tienes
     path('api_web/', include('api_web.urls')),
-]
+    #path('logs/', include('activity_logs.urls')),
+
 
 
 if settings.DEBUG:

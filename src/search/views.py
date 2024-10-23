@@ -4,7 +4,12 @@ from django.template.response import TemplateResponse
 from wagtail.models import Page
 
 from datasets.models import DatasetPage
+from institutions.models import InstitutionPage
+from activity_logs.utils import log_user_activity
+
 from django.db.models import Q
+
+from users.models import CustomUser
 
 # To enable logging of search queries for use with the "Promoted search results" module
 # <https://docs.wagtail.org/en/stable/reference/contrib/searchpromotions.html>
@@ -22,10 +27,14 @@ def search(request):
     if search_query:
         search_results = Page.objects.live().search(search_query)
 
-        # To log this query for use with the "Promoted search results" module:
-
-        # query = Query.get(search_query)
-        # query.add_hit()
+        # Registrar la actividad
+        if  request.user.is_authenticated:
+            log_user_activity(
+                user=request.user,
+                action=f"Search performed: {search_query}",
+                request=request,
+                extra_data={'search_query': search_query}
+            )
 
     else:
         search_results = Page.objects.live()
@@ -38,6 +47,8 @@ def search(request):
         search_results = paginator.page(1)
     except EmptyPage:
         search_results = paginator.page(paginator.num_pages)
+
+    
 
     return TemplateResponse(
         request,
@@ -126,6 +137,15 @@ def searchDatasets(request):
     except EmptyPage:
         search_results = paginator.page(paginator.num_pages)
 
+     # Registrar la actividad
+    if search_query and request.user.is_authenticated:
+        log_user_activity(
+            user=request.user,
+            action=f"Search performed: {search_query}",
+            request=request,
+            extra_data={'search_query': search_query}
+        )
+
     return TemplateResponse(
         request,
         "search/searchDataset.html",
@@ -136,3 +156,80 @@ def searchDatasets(request):
         },
     )
 
+def searchInstitution(request):
+    search_query = request.GET.get("query", None)
+    page = request.GET.get("page", 1)
+
+    # Search
+    if search_query:
+        # Filtrar InstitutionPage cuyo título, descripción o 
+        search_results = InstitutionPage.objects.live().filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+    else:
+        # Mostrar todos los InstitutionPage si no hay consulta
+        search_results = InstitutionPage.objects.live()
+
+    # Remove duplicates
+    search_results = search_results.distinct()
+
+    # Pagination
+    paginator = Paginator(search_results, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    try:
+        search_results = paginator.page(page)
+    except PageNotAnInteger:
+        search_results = paginator.page(1)
+    except EmptyPage:
+        search_results = paginator.page(paginator.num_pages)
+
+    return TemplateResponse(
+        request,
+        "search/searchInstitution.html",
+        {
+            "search_query": search_query,
+            "search_results": search_results,
+            "page_obj": page_obj,
+        },
+    )
+
+def search_users(request):
+    search_query = request.GET.get("query", None)
+    page = request.GET.get("page", 1)
+
+    # Search
+    if search_query:
+        # Filtrar InstitutionPage cuyo título, descripción o 
+        search_results = CustomUser.objects.all().filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query)
+        )
+    else:
+        # Mostrar todos los InstitutionPage si no hay consulta
+        search_results = CustomUser.objects.all()
+
+    # Remove duplicates
+    search_results = search_results.distinct()
+
+    # Pagination
+    paginator = Paginator(search_results, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    try:
+        search_results = paginator.page(page)
+    except PageNotAnInteger:
+        search_results = paginator.page(1)
+    except EmptyPage:
+        search_results = paginator.page(paginator.num_pages)
+
+    return TemplateResponse(
+        request,
+        "search/search_users.html",
+        {
+            "search_query": search_query,
+            "search_results": search_results,
+            "page_obj": page_obj,
+        },
+    )

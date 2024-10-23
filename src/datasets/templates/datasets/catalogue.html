@@ -4,156 +4,161 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/search_results.css' %}">
 <div class="bg-catalogue bg-body-tertiary">
-    <div class="row container-fluid py-4">
-        <!-- Barra lateral de filtros -->
-        <div class="col-md-3 collapse collapse-horizontal" id="collapseExample">
-            <div class="card w-100 shadow-sm">
-                <div class="card-body">
-                    <h5>Fecha de datos</h5>
-                    <hr />
-                    <div class="input-group">
-                        <div class="form-floating mb-3">
-                            <input type="date" class="form-control" id="floatingStart" placeholder="Inicio">
-                            <label for="floatingStart">Fecha inicio</label>
+    <div class="container py-4">
+        <h1>Catálogo de datos</h1>
+        <div class="row">
+            <!-- Barra lateral de filtros -->
+            <div class="col-md-3 collapse collapse-horizontal" id="collapseExample">
+                <div class="card w-100 shadow-sm">
+                    <div class="card-body">
+                        <h5>Fecha de datos</h5>
+                        <hr />
+                        <div class="input-group">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="floatingStart" placeholder="Inicio">
+                                <label for="floatingStart">Fecha inicio</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="floatingEnd" placeholder="Fin">
+                                <label for="floatingEnd">Fecha fin</label>
+                            </div>
                         </div>
-                        <div class="form-floating">
-                            <input type="date" class="form-control" id="floatingEnd" placeholder="Fin">
-                            <label for="floatingEnd">Fecha fin</label>
-                        </div>
+                        <h5 class="mt-3">Ubicación</h5>
+                        <hr />
+                        <input type="text" id="location-search" class="form-control mb-2"
+                            placeholder="Buscar ubicación...">
+                        <ul class="list-unstyled" id="location-filter">
+                            {% for ubicacion in ubicaciones %}
+                            <li class="text-capitalize">
+                                <input class="form-check-input" type="checkbox" value="{{ ubicacion }}"
+                                    id="check{{ ubicacion }}">
+                                <label class="form-check-label" for="check{{ ubicacion }}">
+                                    {{ ubicacion }}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <h5 class="mt-3">Variables</h5>
+                        <hr />
+                        <ul class="list-unstyled" id="variables-filter">
+                            {% for variable in variables %}
+                            <li class="text-capitalize">
+                                <input class="form-check-input" type="checkbox" value="{{ variable }}"
+                                    id="check{{ variable }}">
+                                <label class="form-check-label" for="check{{ variable }}">
+                                    {{ variable }}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <h5 class="mt-3">Instituciones</h5>
+                        <hr />
+                        <ul class="list-unstyled" id="institution-filter">
+                            {% for institucion in instituciones %}
+                            <li class="text-capitalize">
+                                <input class="form-check-input" type="checkbox" value="{{ institucion.id }}"
+                                    id="check{{ institucion.id }}">
+                                <label class="form-check-label" for="check{{ institucion.id }}">
+                                    {{ institucion.title }}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <h5 class="mt-3">Acceso</h5>
+                        <hr />
+                        <ul class="list-unstyled" id="acces-filter">
+                            <li class="text-capitalize">
+                                <input class="form-check-input" type="checkbox" value="public" id="checkLibre">
+                                <label class="form-check-label" for="checkLibre">
+                                    Público
+                                </label>
+                            </li>
+                            <li class="text-capitalize">
+                                <input class="form-check-input" type="checkbox" value="restricted" id="checkPrivado">
+                                <label class="form-check-label" for="checkPrivado">
+                                    Restringido
+                                </label>
+                            </li>
+                        </ul>
+
+                        <h5 class="mt-3">Palabras claves</h5>
+                        <hr />
+                        <ul class="list-unstyled" id="key-words-filter">
+                            {% for keyword in keywords %}
+                            <li class="text-capitalize">
+                                <input class="form-check-input" type="checkbox" value="{{ keyword }}"
+                                    id="check{{ keyword }}">
+                                <label class="form-check-label" for="check{{ keyword }}">
+                                    {{ keyword }}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <h5 class="mt-3">Frecuencia de subida</h5>
+                        <hr />
+                        <ul class="list-unstyled" id="frequency-filter">
+                            {% for frecuencia in frecuencias %}
+                            <li class="text-capitalize">
+                                <input class="form-check-input" type="checkbox" value="{{ frecuencia }}"
+                                    id="check{{ frecuencia }}">
+                                <label class="form-check-label" for="check{{ frecuencia }}">
+                                    {{ frecuencia }}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                    <h5 class="mt-3">Ubicación</h5>
-                    <hr />
-                    <input type="text" id="location-search" class="form-control mb-2" placeholder="Buscar ubicación...">
-                    <ul class="list-unstyled" id="location-filter">
-                        {% for ubicacion in ubicaciones %}
-                        <li class="text-capitalize">
-                            <input class="form-check-input" type="checkbox" value="{{ ubicacion }}"
-                                id="check{{ ubicacion }}">
-                            <label class="form-check-label" for="check{{ ubicacion }}">
-                                {{ ubicacion }}
-                            </label>
-                        </li>
-                        {% endfor %}
-                    </ul>
-
-                    <h5 class="mt-3">Variables</h5>
-                    <hr />
-                    <ul class="list-unstyled" id="variables-filter">
-                        {% for variable in variables %}
-                        <li class="text-capitalize">
-                            <input class="form-check-input" type="checkbox" value="{{ variable }}"
-                                id="check{{ variable }}">
-                            <label class="form-check-label" for="check{{ variable }}">
-                                {{ variable }}
-                            </label>
-                        </li>
-                        {% endfor %}
-                    </ul>
-
-                    <h5 class="mt-3">Instituciones</h5>
-                    <hr />
-                    <ul class="list-unstyled" id="institution-filter">
-                        {% for institucion in instituciones %}
-                        <li class="text-capitalize">
-                            <input class="form-check-input" type="checkbox" value="{{ institucion.id }}"
-                                id="check{{ institucion.id }}">
-                            <label class="form-check-label" for="check{{ institucion.id }}">
-                                {{ institucion.title }}
-                            </label>
-                        </li>
-                        {% endfor %}
-                    </ul>
-
-                    <h5 class="mt-3">Acceso</h5>
-                    <hr />
-                    <ul class="list-unstyled" id="acces-filter">
-                        <li class="text-capitalize">
-                            <input class="form-check-input" type="checkbox" value="public" id="checkLibre">
-                            <label class="form-check-label" for="checkLibre">
-                                Público
-                            </label>
-                        </li>
-                        <li class="text-capitalize">
-                            <input class="form-check-input" type="checkbox" value="restricted" id="checkPrivado">
-                            <label class="form-check-label" for="checkPrivado">
-                                Restringido
-                            </label>
-                        </li>
-                    </ul>
-
-                    <h5 class="mt-3">Palabras claves</h5>
-                    <hr />
-                    <ul class="list-unstyled" id="key-words-filter">
-                        {% for keyword in keywords %}
-                        <li class="text-capitalize">
-                            <input class="form-check-input" type="checkbox" value="{{ keyword }}"
-                                id="check{{ keyword }}">
-                            <label class="form-check-label" for="check{{ keyword }}">
-                                {{ keyword }}
-                            </label>
-                        </li>
-                        {% endfor %}
-                    </ul>
-
-                    <h5 class="mt-3">Frecuencia de subida</h5>
-                    <hr />
-                    <ul class="list-unstyled" id="frequency-filter">
-                        {% for frecuencia in frecuencias %}
-                        <li class="text-capitalize">
-                            <input class="form-check-input" type="checkbox" value="{{ frecuencia }}"
-                                id="check{{ frecuencia }}">
-                            <label class="form-check-label" for="check{{ frecuencia }}">
-                                {{ frecuencia }}
-                            </label>
-                        </li>
-                        {% endfor %}
-                    </ul>
                 </div>
             </div>
-        </div>
 
-        <!-- Resultados de la búsqueda -->
-        <div class="col">
-            <div class="d-flex align-items-center mb-2">
-                <!-- Botón de filtros -->
-                <button type="button"
-                    class="btn border border-dark shadow-sm d-flex align-items-center me-4 btn-filters"
-                    data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false"
-                    aria-controls="collapseExample">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-adjustments-horizontal me-2">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                        <path d="M4 6l8 0" />
-                        <path d="M16 6l4 0" />
-                        <path d="M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                        <path d="M4 12l2 0" />
-                        <path d="M10 12l10 0" />
-                        <path d="M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                        <path d="M4 18l11 0" />
-                        <path d="M19 18l1 0" />
-                    </svg>
-                    Todos los filtros
-                </button>
-                <!-- Barra de búsqueda -->
-                <div class="position-relative w-100 card shadow-sm">
-                    <span class="position-absolute search-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            <!-- Resultados de la búsqueda -->
+            <div class="col">
+                <div class="d-flex align-items-center mb-2">
+                    <!-- Botón de filtros -->
+                    <button type="button"
+                        class="btn border border-dark shadow-sm d-flex align-items-center me-4 btn-filters"
+                        data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false"
+                        aria-controls="collapseExample">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="icon icon-tabler icons-tabler-outline icon-tabler-search">
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-adjustments-horizontal me-2">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-                            <path d="M21 21l-6 -6" />
+                            <path d="M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                            <path d="M4 6l8 0" />
+                            <path d="M16 6l4 0" />
+                            <path d="M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                            <path d="M4 12l2 0" />
+                            <path d="M10 12l10 0" />
+                            <path d="M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                            <path d="M4 18l11 0" />
+                            <path d="M19 18l1 0" />
                         </svg>
-                    </span>
-                    <input type="search" id="searchInput" class="form-control ps-5" placeholder="Buscar..."
-                        aria-label="Search">
+                        Todos los filtros
+                    </button>
+                    <!-- Barra de búsqueda -->
+                    <div class="position-relative w-100 card shadow-sm">
+                        <span class="position-absolute search-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-search">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+                                <path d="M21 21l-6 -6" />
+                            </svg>
+                        </span>
+                        <input type="search" id="searchInput" class="form-control ps-5" placeholder="Buscar..."
+                            aria-label="Search">
+                    </div>
+
                 </div>
+                <div id="resultsContainer">
 
-            </div>
-            <div id="resultsContainer">
-
+                </div>
             </div>
         </div>
     </div>
