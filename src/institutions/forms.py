@@ -11,24 +11,30 @@ class InstitutionPageForm(WagtailAdminPageForm):
         self.fields['owner_user'].queryset = get_user_model().objects.all()
 
 class AddPartnerForm(forms.Form):
-    partner = forms.ModelChoiceField(queryset=CustomUser.objects.all(), label="Seleccionar socio")
+    # Cambiar el campo para aceptar múltiples selecciones de usuarios
+    partners = forms.ModelMultipleChoiceField(
+        queryset=CustomUser.objects.all(), 
+        widget=forms.CheckboxSelectMultiple,
+        label="Seleccionar socios"
+    )
 
     def __init__(self, *args, **kwargs):
         self.institution = kwargs.pop('institution', None)
         super().__init__(*args, **kwargs)
 
     def save(self):
-        from .models import InstitutionMembership  # Importar aquí para evitar importación circular
-        partner = self.cleaned_data['partner']
-        membership, created = InstitutionMembership.objects.get_or_create(
-            user=partner,
-            institution=self.institution,
-            defaults={'role': 'partner'}
-        )
-
-        # Asegurarse de que el rol del usuario se actualice a 'partner'
-        if partner.role != 'partner':
-            partner.role = 'partner'
-            partner.save()
-
-        return membership
+        from .models import InstitutionMembership
+        partners = self.cleaned_data['partners']  # Obtener los socios seleccionados
+        memberships = []
+        for partner in partners:
+            membership, created = InstitutionMembership.objects.get_or_create(
+                user=partner,
+                institution=self.institution,
+                defaults={'role': 'partner'}
+            )
+            # Asegurarse de que el rol del usuario se actualice a 'partner'
+            if partner.role != 'partner':
+                partner.role = 'partner'
+                partner.save()
+            memberships.append(membership)
+        return memberships

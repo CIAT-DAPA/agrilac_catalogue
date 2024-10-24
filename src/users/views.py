@@ -9,7 +9,7 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         user = form.get_user()
-        if user.groups.filter(name='Visitante').exists():
+        if user.role =='visitor':
             auth_login(self.request, form.get_user())
             return redirect('/')  # Redirige a la página de inicio
         return super().form_valid(form)

@@ -9,7 +9,6 @@ from .forms import AddPartnerForm
 from django.contrib import messages
 
 
-
 @login_required
 def institution_partners(request):
     # Obtener la institución del usuario que es dueño
@@ -22,11 +21,17 @@ def institution_partners(request):
         if selected_user_ids:
             for user_id in selected_user_ids:
                 user = CustomUser.objects.get(id=user_id)
+                # Crear la relación de socio si no existe
                 InstitutionMembership.objects.get_or_create(
                     user=user, 
                     institution=institution, 
                     defaults={'role': 'partner'}
                 )
+                # Asegurarse de que el rol del usuario se actualice a 'partner'
+                if user.role != 'partner':
+                    user.role = 'partner'
+                    user.save()
+
             messages.success(request, "Socios agregados exitosamente.")
         else:
             messages.error(request, "No se seleccionaron usuarios.")
