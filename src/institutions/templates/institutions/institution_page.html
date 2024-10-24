@@ -7,11 +7,6 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/institution.css' %}">
 <div class="container border my-5 px-4 py-4 rounded-2 shadow-sm">
-   <!-- En lugar de pasar institution.id, redirige directamente a la vista -->
-   {% if request.user == page.owner_user %}
-   {{page.id}}
-   <a href="{% url 'partners' %}" class="btn btn-primary">Socios</a>
-   {% endif %}
 
    <header class="d-flex align-items-center mb-0">
       <h1 class="me-2 my-0"> {{ page.title }} </h1>
