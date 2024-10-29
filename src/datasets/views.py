@@ -50,13 +50,13 @@ def catalogue(request):
 def dataset_detail(request, pk):
     dataset = get_object_or_404(DatasetPage, pk=pk)
     print("aaaaaaaaaaaaaaaaaaaaaaaaaaa")
-    # Registrar la actividad
-    if request.user:
-        log_user_activity(
-            user=request.user,
-            action=f"Dataset viewed: {dataset.title}",
-            request=request,
-            extra_data={'dataset_viewed': dataset.institution_related}
-        )
+    # # Registrar la actividad
+    # if request.user:
+    #     log_user_activity(
+    #         user=request.user,
+    #         action=f"Dataset viewed: {dataset.title}",
+    #         request=request,
+    #         extra_data={'dataset_viewed': dataset.institution_related}
+    #     )
     
     return render(request, 'datasets/dataset_page.html', {'page': dataset})

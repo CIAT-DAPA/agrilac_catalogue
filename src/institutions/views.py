@@ -72,7 +72,11 @@ def remove_partner(request, institution_id, partner_id):
 def institution_detail(request, pk):
     institution = get_object_or_404(InstitutionPage, pk=pk)
     
-    return render(request, 'institutions/institution_page.html', {'page': institution})
+    # Obtener el contexto adicional del método get_context
+    context = institution.get_context(request)
+    context['page'] = institution
+    
+    return render(request, 'institutions/institution_page.html', context)
 
 
 def get_context(self, request, *args, **kwargs):

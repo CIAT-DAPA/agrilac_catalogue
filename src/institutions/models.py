@@ -86,6 +86,10 @@ class InstitutionPage(Page):
         context['page_obj'] = page_obj
 
         return context
+    
+    def get_url(self, request=None, current_site=None):
+        # Aquí generas la URL en función del ID de la página
+        return f'/institutions/institution/{self.id}/'
 
     
 

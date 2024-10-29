@@ -6,7 +6,7 @@
 <div class="card mb-3 shadow-sm">
     <div class="card-body">
         <div class="row">
-            <a href="{% pageurl result %}" class="text-decoration-none text-reset" target="_blank">
+            <a href="/institutions/institution/{{ result.id }}" class="text-decoration-none text-reset" target="_blank">
                 <div class="d-flex align-items-center mb-3">
                     <h2 class="me-2 mb-0">{{ result.title}}</h2>
                     {% if result.verified %}

@@ -88,6 +88,9 @@ class DatasetPage(Page):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Llama al método save original
 
+    def get_url(self, request=None, current_site=None):
+        # Aquí generas la URL en función del ID de la página
+        return f'/datasets/dataset/{self.id}/'
         
 
 class GeoData(models.Model):
