@@ -7,7 +7,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-from users.views import CustomLoginView
+from users.views import CustomLoginView, RegisterView
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -18,6 +18,7 @@ urlpatterns = [
     path("django-admin/", admin.site.urls),
     path('admin/login/', CustomLoginView.as_view(), name='wagtailadmin_login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('register/', RegisterView.as_view(), name='register'),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", include('search.urls')),
