@@ -49,7 +49,6 @@ def catalogue(request):
 
 def dataset_detail(request, pk):
     dataset = get_object_or_404(DatasetPage, pk=pk)
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaa")
     # # Registrar la actividad
     # if request.user:
     #     log_user_activity(

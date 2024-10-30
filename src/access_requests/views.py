@@ -46,7 +46,6 @@ def user_access_requests(request):
     })
 
 # Aprobar o rechazar solicitud
-
 @login_required
 def process_request(request, request_id, action):
     access_request = get_object_or_404(AccessRequest, pk=request_id, status='pending')
@@ -62,18 +61,21 @@ def process_request(request, request_id, action):
         access_request.access_response = access_response
         access_request.save()
 
+        # Obtener el correo del dueño de la organización y sus socios
+        organization_owner_email = access_request.dataset.institution_related.owner_user.email
+        partner_emails = access_request.dataset.institution_related.institution_memberships.values_list('email', flat=True)
+        recipient_list = [access_request.user.email, organization_owner_email] + list(partner_emails)
+
         try:
             send_access_request_email(
-                access_request.user.email,
+                recipient_list,
                 access_request.dataset.title,
                 access_request.access_response,
                 access_request.status
             )
-
         except:
             print("No se pudo enviar el correo")
         
-    
     return redirect('review_requests')
 
 # Borrar una solicitud

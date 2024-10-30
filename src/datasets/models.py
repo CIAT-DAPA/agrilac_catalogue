@@ -1,8 +1,12 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel, FieldRowPanel, InlinePanel
 from wagtail.fields import RichTextField
 from wagtail.models import Page
 from modelcluster.fields import ParentalKey
+
+import csv
+
 
 from django.utils.translation import gettext_lazy as _
 
@@ -46,6 +50,8 @@ class DatasetPage(Page):
     ]
     
     geo_type = models.CharField(max_length=50, choices=GEO_TYPE_CHOICES, verbose_name=_("Tipo de dato geográfico"))
+    csv_file = models.FileField(upload_to='geo_csvs/', blank=True, null=True, verbose_name=_("Archivo CSV de ubicaciones."), help_text=" Este es un archivo separado por comas y debe tener una columna 'tipo' que debe coincidir con el valor escogido en 'Tipo de dato geográfico'")
+
 
     content_panels = Page.content_panels + [
         MultiFieldPanel([
@@ -71,6 +77,7 @@ class DatasetPage(Page):
             FieldPanel('access_instructions'),
         ], heading="Detalles del Dataset"),
         FieldPanel('geo_type'),
+        FieldPanel('csv_file'), 
         InlinePanel('geo_data', label="Datos Geográficos"),
         InlinePanel('complementary_info', label="Información Complementaria"),
         InlinePanel('data_dictionary', label="Diccionario de Datos"),
@@ -85,6 +92,35 @@ class DatasetPage(Page):
             return field_value.split(",")
         return []
     
+    def clean(self):
+        # Llama al método clean de la clase base para realizar otras validaciones
+        super().clean()
+
+        # Validar el archivo CSV
+        if self.csv_file:
+            # Leer el contenido del archivo CSV y verificar la columna 'tipo'
+            try:
+                # Decodificar el archivo como texto y leer el CSV
+                self.csv_file.seek(0)  # Asegurarse de leer desde el inicio
+                csv_reader = csv.DictReader(self.csv_file.read().decode('utf-8').splitlines())
+                
+                # Verificar si existe la columna 'tipo'
+                if 'tipo' not in csv_reader.fieldnames:
+                    raise ValidationError("El archivo CSV debe contener una columna llamada 'tipo'.")
+
+                # Verificar si los valores en la columna 'tipo' coinciden con el valor seleccionado en geo_type
+                expected_type = self.geo_type
+                for row in csv_reader:
+                    if row['tipo'] != expected_type:
+                        raise ValidationError(
+                            f"El valor en la columna 'tipo' del CSV debe coincidir con '{expected_type}'."
+                        )
+
+            except Exception as e:
+                raise ValidationError(f"Error al procesar el archivo CSV: {str(e)}")
+
+
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Llama al método save original
 
@@ -98,7 +134,6 @@ class GeoData(models.Model):
 
     latitude = models.FloatField(blank=True, null=True, verbose_name=_("Latitud"))
     longitude = models.FloatField(blank=True, null=True, verbose_name=_("Longitud"))
-    csv_file = models.FileField(upload_to='geo_csvs/', blank=True, null=True, verbose_name=_("Archivo CSV de ubicaciones"))
     region_name = models.CharField(max_length=100, blank=True, verbose_name=_("Nombre región"))
     municipality_name = models.CharField(max_length=100, blank=True, verbose_name=_("Nombre municipalidad"))
 
@@ -112,8 +147,8 @@ class GeoData(models.Model):
             FieldPanel('region_name'),
             FieldPanel('municipality_name'),
         ]),
-        FieldPanel('csv_file'),
     ]
+
 
 
 class ComplementaryInfo(models.Model):

@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
         var urlDatasetLabelWrapper = document.querySelector('label[id="id_url_dataset-label"]');
         
         if (typeDatasetField) {
-            console.log("entré url")
-            print("entré url")
             if (typeDatasetField.value === 'public') {
                 if (urlDatasetFieldWrapper && urlDatasetLabelWrapper) {
                     urlDatasetFieldWrapper.style.display = 'block';
@@ -21,59 +19,74 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función que muestra u oculta los campos según la selección del tipo de dato geográfico
     function toggleGeoFields() {
-        console.log("entré1")
-        var geoType = document.querySelector('select[name="geo_type"]').value; // Obtener el valor seleccionado en geo_type
+        var geoTypeSelect = document.querySelector('select[name="geo_type"]');
+        if (!geoTypeSelect) return; // Si no se encuentra el campo geo_type, salir
+        
+        var geoType = geoTypeSelect.value;
         
         // Selecciona todos los grupos de campos de datos geográficos dinámicos
-        var geoFields = document.querySelectorAll('section[id^="panel-child-content-datos_geograficos-section"]');
+        var geoGroups = document.querySelectorAll('#id_geo_data-FORMS > div[data-inline-panel-child]');
 
-        geoFields.forEach(function(section, index) {
-            console.log(index)
+        geoGroups.forEach(function(group, index) {
             // Seleccionar los campos y etiquetas de cada grupo
-            var latitudeField = section.querySelector(`input[name="geo_data-${index}-latitude"]`)?.closest('.w-field');
-            var longitudeField = section.querySelector(`input[name="geo_data-${index}-longitude"]`)?.closest('.w-field');
-            var regionField = section.querySelector(`input[name="geo_data-${index}-region_name"]`)?.closest('.w-field');
-            var municipalityField = section.querySelector(`input[name="geo_data-${index}-municipality_name"]`)?.closest('.w-field');
+            var latitudeField = group.querySelector(`input[name="geo_data-${index}-latitude"]`)?.closest('.w-field');
+            var latitudeLabel = group.querySelector(`label[for="id_geo_data-${index}-latitude"]`);
             
-            // Lógica para mostrar/ocultar campos dependiendo del valor seleccionado
+            var longitudeField = group.querySelector(`input[name="geo_data-${index}-longitude"]`)?.closest('.w-field');
+            var longitudeLabel = group.querySelector(`label[for="id_geo_data-${index}-longitude"]`);
+            
+            var regionField = group.querySelector(`input[name="geo_data-${index}-region_name"]`)?.closest('.w-field');
+            var regionLabel = group.querySelector(`label[for="id_geo_data-${index}-region_name"]`);
+            
+            var municipalityField = group.querySelector(`input[name="geo_data-${index}-municipality_name"]`)?.closest('.w-field');
+            var municipalityLabel = group.querySelector(`label[for="id_geo_data-${index}-municipality_name"]`);
+            
+            // Lógica para mostrar/ocultar campos y sus labels dependiendo del valor seleccionado
             if (geoType === 'coords') {
                 // Mostrar latitud/longitud y ocultar región/municipalidad
-                if (latitudeField && longitudeField) {
-                    latitudeField.style.display = 'block';
-                    longitudeField.style.display = 'block';
-                }
-                if (regionField && municipalityField) {
-                    regionField.style.display = 'none';
-                    municipalityField.style.display = 'none';
-                }
-            } else if (geoType === 'admin_levels') {
+                if (latitudeField) latitudeField.style.display = 'block';
+                if (latitudeLabel) latitudeLabel.style.display = 'block';
+                if (longitudeField) longitudeField.style.display = 'block';
+                if (longitudeLabel) longitudeLabel.style.display = 'block';
+                
+                if (regionField) regionField.style.display = 'none';
+                if (regionLabel) regionLabel.style.display = 'none';
+                if (municipalityField) municipalityField.style.display = 'none';
+                if (municipalityLabel) municipalityLabel.style.display = 'none';
+            } else if (geoType === 'admin_level') {
                 // Mostrar región/municipalidad y ocultar latitud/longitud
-                if (latitudeField && longitudeField) {
-                    latitudeField.style.display = 'none';
-                    longitudeField.style.display = 'none';
-                }
-                if (regionField && municipalityField) {
-                    regionField.style.display = 'block';
-                    municipalityField.style.display = 'block';
-                }
+                if (latitudeField) latitudeField.style.display = 'none';
+                if (latitudeLabel) latitudeLabel.style.display = 'none';
+                if (longitudeField) longitudeField.style.display = 'none';
+                if (longitudeLabel) longitudeLabel.style.display = 'none';
+                
+                if (regionField) regionField.style.display = 'block';
+                if (regionLabel) regionLabel.style.display = 'block';
+                if (municipalityField) municipalityField.style.display = 'block';
+                if (municipalityLabel) municipalityLabel.style.display = 'block';
+            } else {
+                // Oculta todo si no ha seleccionado nada
+                if (regionField) regionField.style.display = 'none';
+                if (regionLabel) regionLabel.style.display = 'none';
+                if (municipalityField) municipalityField.style.display = 'none';
+                if (municipalityLabel) municipalityLabel.style.display = 'none';
+                if (latitudeField) latitudeField.style.display = 'none';
+                if (latitudeLabel) latitudeLabel.style.display = 'none';
+                if (longitudeField) longitudeField.style.display = 'none';
+                if (longitudeLabel) longitudeLabel.style.display = 'none';
             }
         });
     }
 
-
     function observeDynamicFields() {
-        var formContainer = document.querySelector('section[id="panel-child-content-datos_geograficos-section"]');
-        console.log("entré0")
+        var formContainer = document.querySelector('#id_geo_data-FORMS');
+
         if (formContainer) {
-            console.log("entré2")
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
                     if (mutation.addedNodes.length > 0) {
-                        setTimeout(function() {
-                            toggleGeoFields(); // Asegura que los nuevos campos añadidos respeten la selección global
-                        }, 500); // Espera a que los campos dinámicos se añadan
+                        setTimeout(toggleGeoFields, 500); // Espera a que los campos dinámicos se añadan
                     }
                 });
             });
@@ -82,9 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
     function init() {
-        // Ejecutar la función para el campo de tipo de dataset al cargar la página
         toggleUrlField();
         toggleGeoFields();
 
@@ -96,15 +107,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Escuchar cambios en el select de tipo de geo-dato
-        document.querySelector('select[name="geo_type"]').addEventListener('change', toggleGeoFields);
+        var geoTypeSelect = document.querySelector('select[name="geo_type"]');
+        if (geoTypeSelect) {
+            geoTypeSelect.addEventListener('change', toggleGeoFields);
+        }
 
-        // Iniciar la observación de campos dinámicos
         observeDynamicFields();
-
-
     }
 
-     // Ejecutar init cuando el DOM esté listo
-     setTimeout(init, 500);
-
+    setTimeout(init, 500);
 });
