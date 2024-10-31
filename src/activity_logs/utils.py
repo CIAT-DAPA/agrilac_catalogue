@@ -15,4 +15,3 @@ def log_user_activity(user, action, request=None, extra_data=None):
         log.user_agent = request.META.get('HTTP_USER_AGENT')
     
     log.save()
-    print(log)

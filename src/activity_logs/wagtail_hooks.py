@@ -12,6 +12,6 @@ def register_user_activity_url():
     ]
 
 
-# @hooks.register('register_admin_menu_item')
-# def register_user_activity_menu_item():
-#     return MenuItem('Users sctivity logs', reverse('users_activity_logs'), icon_name='user')
+@hooks.register('register_admin_menu_item')
+def register_user_activity_menu_item():
+    return MenuItem('Logs de usuarios', reverse('users_activity'), icon_name='user')
