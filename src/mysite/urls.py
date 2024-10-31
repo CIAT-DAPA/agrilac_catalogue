@@ -30,7 +30,7 @@ urlpatterns = [
     # Incluir las URLs de tu aplicación si las tienes
     path('api_web/', include('api_web.urls')),
     #path('logs/', include('activity_logs.urls')),
-
+]
 
 
 if settings.DEBUG:
