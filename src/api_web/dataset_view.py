@@ -2,8 +2,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.db.models import Q
-
-from datasets.models import DatasetPage  
+from datasets.models import DatasetPage
+from .serializers import DatasetPageSerializer
 
 class DatasetListAPIView(APIView):
     def get(self, request):
@@ -49,3 +49,45 @@ class DatasetSearchAPIView(APIView):
             'end_date', 'upload_frequency', 'keywords', 'access_instructions', 'geo_type'
         )
         return Response(list(datasets))
+
+
+
+class DatasetCreateAPIView(APIView):
+    def post(self, request):
+        serializer = DatasetPageSerializer(data=request.data)
+        if serializer.is_valid():
+            dataset = serializer.save()  # Guarda el dataset usando el método create
+            return Response({
+                'id': dataset.id,
+                'title': dataset.title,
+                'message': 'Dataset creado exitosamente.'
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class DatasetManageAPIView(APIView):
+    def post(self, request):
+        serializer = DatasetPageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk):
+        try:
+            dataset = DatasetPage.objects.get(pk=pk)
+        except DatasetPage.DoesNotExist:
+            return Response({"detail": "Dataset no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = DatasetPageSerializer(dataset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        try:
+            dataset = DatasetPage.objects.get(pk=pk)
+            dataset.delete()
+            return Response({"detail": "Dataset eliminado correctamente."}, status=status.HTTP_204_NO_CONTENT)
+        except DatasetPage.DoesNotExist:
+            return Response({"detail": "Dataset no encontrado."}, status=status.HTTP_404_NOT_FOUND)
