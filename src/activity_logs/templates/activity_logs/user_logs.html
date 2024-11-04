@@ -3,78 +3,42 @@
 {% block content %}
     {% include "wagtailadmin/shared/header.html" with title="Registro de Actividad de Usuarios" icon="user" %}
 
-    <div class="nice-padding">
-        <!-- Buscador con estilo similar al de Wagtail -->
-        <form method="get" action="{% url 'users_activity' %}" class="w-search">
-            <div class="w-search__input-container">
-                <input type="text" name="q" placeholder="Buscar por usuario o acción..." value="{{ query }}" class="w-search__input" />
-                <button type="submit" class="w-search__submit">
-                    <svg class="icon icon-search icon" aria-hidden="true"><use href="#icon-search"></use></svg>
-                    <span class="w-search__submit-text">Buscar</span>
-                </button>
-            </div>
-        </form>
+    <!-- Buscador similar al de Wagtail -->
+    <form method="get" class="search-form nice-padding">
+        <div class="justify-content-center">
+            <input type="text" name="q" class="input" placeholder="Buscar usuario o acción" value="{{ query }}" style="width: 50%;">
+            <button type="submit" class="button button--icon button-primary" style="vertical-align: unset;">
+                <svg class="icon icon-search" aria-hidden="true"><use href="#icon-search"></use></svg>
+            </button>
+        </div>
+    </form>
 
-        <!-- Tabla de logs de usuarios agrupados por usuario -->
-        <table class="listing nice-padding">
-            <thead>
+    <!-- Tabla de logs -->
+    <table class="listing nice-padding" style="margin-top: 10px;">
+        <thead>
+            <tr>
+              
+                <th><strong>Usuario</strong></th>
+                <th><strong>Acción</strong></th>
+                <th><strong>Detalles</strong></th>
+                <th><strong>Fecha y Hora</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user, logs in grouped_logs.items %}
                 <tr>
-                    <th>ID</th>
-                    <th>Usuario</th>
-                    <th>Acción</th>
-                    <th>Fecha y Hora</th>
-                    <th>Detalles</th>
+                    <td colspan="5"><strong>{{ user.username }}</strong></td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for user, logs in grouped_logs.items %}
+                {% for log in logs %}
                     <tr>
-                        <td colspan="5"><strong>{{ user }}</strong></td>
-                    </tr>
-                    {% for log in logs %}
-                        <tr>
-                            <td>{{ log.id }}</td>
-                            <td>{{ log.user.username }}</td>
-                            <td>{{ log.action }}</td>
-                            <td>{{ log.timestamp }}</td>
-                            <td>{{ log.extra_data }}</td>
-                        </tr>
-                    {% endfor %}
-                {% empty %}
-                    <tr>
-                        <td colspan="5">No hay registros de actividad disponibles.</td>
+                    
+                        <td>{{""}}</td>
+                        <td>{{ log.action }}</td>
+                        <td>{{ log.formatted_extra_data }}</td>
+                        <td>{{ log.timestamp|date:"Y-m-d H:i:s" }}</td>
                     </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% endblock %}
-{% block extra_css %}
-    {{ block.super }}
-    <style>
-        .w-search__input-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .w-search__input {
-            flex-grow: 1;
-            padding: 5px 10px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .w-search__submit {
-            background: #5b2c82;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            font-size: 14px;
-            border-radius: 4px;
-            margin-left: 5px;
-        }
-        .w-search__submit .icon {
-            margin-right: 5px;
-        }
-    </style>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

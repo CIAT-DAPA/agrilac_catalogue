@@ -32,20 +32,5 @@ class CustomUser(AbstractUser):
         verbose_name="Instituciones donde es miembro"
     )
 
-    # Especificamos related_name diferente para evitar conflictos con AbstractUser
-    # groups = models.ManyToManyField(
-    #     'auth.Group',
-    #     related_name='customuser_groups',  # Cambia el nombre de la relación inversa
-    #     blank=True,
-    #     help_text="Los grupos a los que pertenece el usuario.",
-    #     verbose_name="groups",
-    # )
-    # user_permissions = models.ManyToManyField(
-    #     'auth.Permission',
-    #     related_name='customuser_permissions',  # Cambia el nombre de la relación inversa
-    #     blank=True,
-    #     help_text="Permisos específicos del usuario.",
-    #     verbose_name="user permissions",
-    # )
 
 

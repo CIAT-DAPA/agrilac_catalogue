@@ -17,3 +17,8 @@ class UserActivityLog(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.action} at {self.timestamp}"
+    
+    def formatted_extra_data(self):
+        if isinstance(self.extra_data, dict):
+            return ", ".join([f"{key}: {value}" for key, value in self.extra_data.items()])
+        return self.extra_data

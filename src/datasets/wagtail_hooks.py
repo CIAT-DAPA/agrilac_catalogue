@@ -17,6 +17,9 @@ class DatasetPagePermissionHelper:
         # Verifica si el dataset está relacionado con una institución
         if hasattr(page.specific, 'institution_related') and page.specific.institution_related:
             institution = page.specific.institution_related
+            # Permitir que los superusuarios puedan editar cualquier página
+            if user.is_superuser:
+                return True
             # Verifica si el usuario es el dueño de la institución o socio
             if user == institution.owner_user:
                 return True

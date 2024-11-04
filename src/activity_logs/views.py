@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from collections import defaultdict
 from .models import UserActivityLog
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def users_activity_logs(request):
     # Asegúrate de que solo los usuarios superadministradores puedan acceder
     if not request.user.is_superuser:

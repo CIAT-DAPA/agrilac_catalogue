@@ -131,7 +131,7 @@ REST_FRAMEWORK = {
 LANGUAGE_CODE = "es-es"
 WAGTAILADMIN_BASE_LANGUAGE = 'es-es'
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'America/Guatemala'
 
 USE_I18N = True
 USE_L10N = True

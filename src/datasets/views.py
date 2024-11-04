@@ -53,9 +53,9 @@ def dataset_detail(request, pk):
     if request.user:
         log_user_activity(
             user=request.user,
-            action=f"Dataset viewed: {dataset.title}",
+            action=f"Dataset visto",
             request=request,
-            extra_data={'dataset_institution': dataset.institution_related.name}
+            extra_data={'Título del dataset': dataset.title, 'Institución del dataset' :dataset.institution_related.name}
         )
     
     return render(request, 'datasets/dataset_page.html', {'page': dataset})

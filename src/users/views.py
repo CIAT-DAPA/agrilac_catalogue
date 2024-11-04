@@ -6,6 +6,9 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .models import CustomUser  # Importa tu modelo de usuario personalizado
 from .forms import CustomUserCreationForm, CustomAuthenticationForm  # Importa tus formularios personalizados
+from activity_logs.utils import log_user_activity  # Importa tu función para registrar actividad
+from django.utils import timezone
+
 
 # Vista personalizada de Login
 class CustomLoginView(LoginView):
@@ -14,6 +17,14 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         user = form.get_user()
+        # Registrar el inicio de sesión en los logs de actividad
+        log_user_activity(
+            user=user,
+            action="Inicio de sesión",
+            request=self.request,
+            extra_data={}
+        )
+
         if user.role == 'visitor':
             auth_login(self.request, form.get_user())
             return redirect('/')  # Redirige a la página principal para visitantes

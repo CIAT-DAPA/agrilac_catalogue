@@ -141,9 +141,9 @@ def searchDatasets(request):
     if search_query and request.user.is_authenticated:
         log_user_activity(
             user=request.user,
-            action=f"Search performed: {search_query}",
+            action=f"Busqueda",
             request=request,
-            extra_data={'search_query': search_query}
+            extra_data=search_query
         )
 
     return TemplateResponse(
