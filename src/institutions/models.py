@@ -4,6 +4,7 @@ from wagtail.fields import RichTextField
 from wagtail.models import Page
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
+from django.contrib.auth.models import Group
 
 from .forms import InstitutionPageForm 
 # Create your models here.
@@ -47,6 +48,7 @@ class InstitutionPage(Page):
     def __str__(self):
         return self.name
     
+    
     def save(self, *args, **kwargs):
         previous_owner = None
         if self.pk:
@@ -60,12 +62,33 @@ class InstitutionPage(Page):
             self.owner_user.role = 'owner'
             self.owner_user.save()
 
+            # Agregar el usuario al grupo "Dueños"
+            owners_group, created = Group.objects.get_or_create(name="Dueños")
+            owners_group.user_set.add(self.owner_user)
+
+            # Remover el usuario de otros grupos que no correspondan a su rol
+            if Group.objects.filter(name="Socios").exists():
+                self.owner_user.groups.remove(Group.objects.get(name="Socios"))
+            if Group.objects.filter(name="Visitante").exists():
+                self.owner_user.groups.remove(Group.objects.get(name="Visitante"))
+
         # Si había un owner anterior que ha sido cambiado, revierte su rol a 'visitor' o 'partner'
         if previous_owner and previous_owner != self.owner_user:
             previous_owner.role = 'visitor'  # o el rol que consideres adecuado
             previous_owner.save()
 
-    
+            # Agregar el usuario anterior al grupo correspondiente
+            if previous_owner.role == 'visitor':
+                visitor_group, created = Group.objects.get_or_create(name="Visitante")
+                visitor_group.user_set.add(previous_owner)
+            elif previous_owner.role == 'partner':
+                partner_group, created = Group.objects.get_or_create(name="Socios")
+                partner_group.user_set.add(previous_owner)
+
+            # Remover el usuario del grupo "Dueños" si ya no es owner
+            if Group.objects.filter(name="Dueños").exists():
+                previous_owner.groups.remove(Group.objects.get(name="Dueños"))
+        
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
