@@ -63,8 +63,8 @@ class InstitutionPage(Page):
             self.owner_user.save()
 
             # Agregar el usuario al grupo "Dueños"
-            owners_group, created = Group.objects.get_or_create(name="Dueños")
-            owners_group.user_set.add(self.owner_user)
+            group = Group.objects.get(name='Dueños')
+            self.owner_user.groups.add(group)
 
             # Remover el usuario de otros grupos que no correspondan a su rol
             if Group.objects.filter(name="Socios").exists():
@@ -77,6 +77,7 @@ class InstitutionPage(Page):
             previous_owner.role = 'visitor'  # o el rol que consideres adecuado
             previous_owner.save()
 
+            previous_owner.groups.clear()
             # Agregar el usuario anterior al grupo correspondiente
             if previous_owner.role == 'visitor':
                 visitor_group, created = Group.objects.get_or_create(name="Visitante")

@@ -7,6 +7,7 @@ from users.models import CustomUser
 from .models import InstitutionPage, InstitutionMembership
 from .forms import AddPartnerForm
 from django.contrib import messages
+from django.contrib.auth.models import Group
 
 
 @login_required
@@ -29,6 +30,9 @@ def institution_partners(request):
                 )
                 # Asegurarse de que el rol del usuario se actualice a 'partner'
                 if user.role != 'partner':
+                    user.groups.clear()
+                    group = Group.objects.get(name='Socios')
+                    user.groups.add(group)
                     user.role = 'partner'
                     user.save()
 
@@ -59,6 +63,9 @@ def remove_partner(request, institution_id, partner_id):
         # Verificar si el usuario pertenece a alguna otra institución
         if not InstitutionMembership.objects.filter(user=user).exists():
             # Si no pertenece a ninguna otra institución, cambiamos su rol a 'visitor'
+            user.groups.clear()
+            group = Group.objects.get(name='Visitante')
+            user.groups.add(group)
             user.role = CustomUser.VISITOR
             user.save()
 
