@@ -33,7 +33,8 @@ class InstitutionPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('name'),
-        FieldPanel('verified'),
+        # Agrega permiso al panel de `verified` solo para superusuarios
+        FieldPanel('verified', permission='auth.change_user'),  # 'auth.change_user' es solo accesible a superusuarios
         FieldPanel('owner_user'),
         FieldPanel('description'),
         FieldPanel('email'),
