@@ -3,15 +3,6 @@ from django.templatetags.static import static
 from wagtail import hooks
 from .models import InstitutionPage  
 
-
-@hooks.register('insert_editor_js')
-def editor_js():
-    js_files = [
-        'js/restrict_verified_field.js',
-    ]
-    js_includes = ''.join(['<script src="{0}"></script>'.format(static(file)) for file in js_files])
-    return js_includes
-
 class InstitutionPagePermissionHelper:
     def user_can_edit_obj(self, user, page):
         # Permitir que los superusuarios puedan editar cualquier página

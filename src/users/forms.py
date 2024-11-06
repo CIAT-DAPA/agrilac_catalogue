@@ -45,8 +45,11 @@ class CustomUserCreationForm(UserCreationForm):
         # Sobrescribimos el método `save` para asegurarnos de que el rol sea 'visitor' por defecto
         user = super().save(commit=False)
         user.role = CustomUser.VISITOR  # Establecemos el rol como 'visitor'
+        if commit:
+            user.save()  # Guarda el usuario en la base de datos para asignarle un ID
+
+        # Luego de guardarlo, podemos asignar el grupo
         group = Group.objects.get(name='Visitante')
         user.groups.add(group)
-        if commit:
-            user.save()
+        
         return user
