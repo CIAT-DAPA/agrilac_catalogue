@@ -163,10 +163,14 @@
                         <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuLink">
                             <li class="">
                                 <p class="dropdown-item-text mb-1">
-                                    Rol: <strong class="text-capitalize">{{ request.user.role }}</strong>
+                                    {% if request.user.is_superuser %}
+                                        Rol: <strong class="text-capitalize">Administrador</strong>
+                                    {% else %}
+                                        Rol: <strong class="text-capitalize">{{ request.user.role }}</strong>
+                                    {% endif %}
                                 </p>
                             </li>
-                            {% if request.user.role != 'visitor' %}
+                            {% if request.user.role != 'visitor' or request.user.is_superuser %}
                             <li class="border-bottom border-dark-subtle mb-2">
                                 <a class="dropdown-item" target="_blank" href="/admin">
                                     Ir al panel administrativo

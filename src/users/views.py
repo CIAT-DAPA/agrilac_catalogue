@@ -24,8 +24,10 @@ class CustomLoginView(LoginView):
             request=self.request,
             extra_data={}
         )
-
-        if user.role == 'visitor':
+        if user.is_superuser:
+            auth_login(self.request, form.get_user())
+            return redirect('/admin')  # Redirige a /admin
+        elif user.role == 'visitor':
             auth_login(self.request, form.get_user())
             return redirect('/')  # Redirige a la página principal para visitantes
         return super().form_valid(form)
