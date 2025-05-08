@@ -240,23 +240,7 @@
          <div id="map" class="mb-2 mt-3" style="height: 500px;"></div>
          <!-- Pasar las coordenadas al JS como un objeto JSON -->
          <script>
-            var geoData = [
-               {% for geo_data in page.geo_data.all %}
-            {% if geo_data.geo_type == 'coords' %}
-            {
-               "type": "coords",
-                  "latitude": { { geo_data.latitude } },
-               "longitude": { { geo_data.longitude } }
-            },
-            {% else %}
-            {
-               "type": "region",
-                  "region_name": "{{ geo_data.region_name }}",
-                     "municipality_name": "{{ geo_data.municipality_name }}"
-            },
-            {% endif %}
-            {% endfor %}
-            ];
+            var geoData = {{ geo_json|safe }};
          </script>
          {% endif %}
       </div>

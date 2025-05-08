@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import DatasetPage
 from activity_logs.utils import log_user_activity
+import json
 
 def catalogue(request):
     datasets = DatasetPage.objects.live()
@@ -49,13 +50,37 @@ def catalogue(request):
 
 def dataset_detail(request, pk):
     dataset = get_object_or_404(DatasetPage, pk=pk)
-    # # Registrar la actividad
-    if request.user:
+    if request.user.is_authenticated:
         log_user_activity(
             user=request.user,
-            action=f"Dataset visto",
+            action="Dataset visto",
             request=request,
-            extra_data={'Título del dataset': dataset.title, 'Institución del dataset' :dataset.institution_related.name}
+            extra_data={
+                'Título del dataset': dataset.title,
+                'Institución del dataset': dataset.institution_related.name if dataset.institution_related else ''
+            }
         )
-    
-    return render(request, 'datasets/dataset_page.html', {'page': dataset})
+
+    # Construir y serializar JSON de geo_data usando el tipo definido en DatasetPage
+    geo_list = []
+    for geo in dataset.geo_data.all():
+        if dataset.geo_type == 'coords':
+            geo_list.append({
+                "type": "coords",
+                "type_temp": dataset.geo_type,
+                "latitude": geo.latitude,
+                "longitude": geo.longitude,
+            })
+        else:
+            geo_list.append({
+                "type": "region",
+                "type_temp": dataset.geo_type,
+                "region_name": geo.region_name,
+                "municipality_name": geo.municipality_name,
+            })
+    geo_json = json.dumps(geo_list)
+
+    return render(request, 'datasets/dataset_page.html', {
+        'page': dataset,
+        'geo_json': geo_json,
+    })
