@@ -6,3 +6,6 @@
 .venv/Lib/site-packages/distutils-precedence.pth
 note.txt
 *__pycache__
+# Static and media files
+media/
+static/
